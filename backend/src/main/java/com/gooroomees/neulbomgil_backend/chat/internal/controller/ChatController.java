@@ -1,9 +1,9 @@
-package com.gooroomees.neulbomgil_backend.domain.chat.controller;
+package com.gooroomees.neulbomgil_backend.chat.internal.controller;
 
 import com.gooroomees.neulbomgil_backend.identity.UserAuth;
-import com.gooroomees.neulbomgil_backend.domain.chat.dto.ChatResponseDto;
-import com.gooroomees.neulbomgil_backend.domain.chat.dto.ChatRoomResponseDto;
-import com.gooroomees.neulbomgil_backend.domain.chat.service.ChatService;
+import com.gooroomees.neulbomgil_backend.chat.internal.dto.ChatResponseDto;
+import com.gooroomees.neulbomgil_backend.chat.internal.dto.ChatRoomResponseDto;
+import com.gooroomees.neulbomgil_backend.chat.internal.service.ChatService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

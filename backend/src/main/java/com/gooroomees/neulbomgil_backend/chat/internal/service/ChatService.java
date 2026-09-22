@@ -1,17 +1,17 @@
-package com.gooroomees.neulbomgil_backend.domain.chat.service;
+package com.gooroomees.neulbomgil_backend.chat.internal.service;
 
 
 import com.gooroomees.neulbomgil_backend.identity.UserAuth;
-import com.gooroomees.neulbomgil_backend.domain.chat.dto.ChatRequestDto;
-import com.gooroomees.neulbomgil_backend.domain.chat.dto.ChatResponseDto;
-import com.gooroomees.neulbomgil_backend.domain.chat.dto.ChatRoomResponseDto;
-import com.gooroomees.neulbomgil_backend.domain.chat.entity.Chat;
-import com.gooroomees.neulbomgil_backend.domain.chat.repository.ChatUserRepository;
-import com.gooroomees.neulbomgil_backend.domain.chat.repository.ChatRoomRepository;
-import com.gooroomees.neulbomgil_backend.domain.chat.repository.ChatRepository;
+import com.gooroomees.neulbomgil_backend.chat.internal.dto.ChatRequestDto;
+import com.gooroomees.neulbomgil_backend.chat.internal.dto.ChatResponseDto;
+import com.gooroomees.neulbomgil_backend.chat.internal.dto.ChatRoomResponseDto;
+import com.gooroomees.neulbomgil_backend.chat.internal.entity.Chat;
+import com.gooroomees.neulbomgil_backend.chat.internal.repository.ChatUserRepository;
+import com.gooroomees.neulbomgil_backend.chat.internal.repository.ChatRoomRepository;
+import com.gooroomees.neulbomgil_backend.chat.internal.repository.ChatRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import com.gooroomees.neulbomgil_backend.domain.chat.entity.ChatRoom;
+import com.gooroomees.neulbomgil_backend.chat.internal.entity.ChatRoom;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;

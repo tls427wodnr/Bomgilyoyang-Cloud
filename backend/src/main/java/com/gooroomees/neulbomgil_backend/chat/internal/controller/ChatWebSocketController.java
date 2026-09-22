@@ -1,8 +1,8 @@
-package com.gooroomees.neulbomgil_backend.domain.chat.controller;
+package com.gooroomees.neulbomgil_backend.chat.internal.controller;
 
-import com.gooroomees.neulbomgil_backend.domain.chat.dto.ChatRequestDto;
-import com.gooroomees.neulbomgil_backend.domain.chat.dto.ChatResponseDto;
-import com.gooroomees.neulbomgil_backend.domain.chat.service.ChatService;
+import com.gooroomees.neulbomgil_backend.chat.internal.dto.ChatRequestDto;
+import com.gooroomees.neulbomgil_backend.chat.internal.dto.ChatResponseDto;
+import com.gooroomees.neulbomgil_backend.chat.internal.service.ChatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.DestinationVariable;

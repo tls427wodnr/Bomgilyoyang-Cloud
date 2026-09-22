@@ -1,9 +1,9 @@
-package com.gooroomees.neulbomgil_backend.domain.chat.repository;
+package com.gooroomees.neulbomgil_backend.chat.internal.repository;
 
 
 import com.gooroomees.neulbomgil_backend.identity.UserAuth;
-import com.gooroomees.neulbomgil_backend.domain.chat.dto.ChatRoomResponseDto;
-import com.gooroomees.neulbomgil_backend.domain.chat.entity.ChatRoom;
+import com.gooroomees.neulbomgil_backend.chat.internal.dto.ChatRoomResponseDto;
+import com.gooroomees.neulbomgil_backend.chat.internal.entity.ChatRoom;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -30,7 +30,7 @@ select cr from ChatRoom cr where cr.roomId = :roomId
     Optional<ChatRoom> findById(Long roomId);
 
     @Query("""
-    select new com.gooroomees.neulbomgil_backend.domain.chat.dto.ChatRoomResponseDto(
+    select new com.gooroomees.neulbomgil_backend.chat.internal.dto.ChatRoomResponseDto(
         cr.roomId,
         u.userId,
         u.name,
@@ -60,7 +60,7 @@ select cr from ChatRoom cr where cr.roomId = :roomId
     List<ChatRoomResponseDto> findAllChatRoomResponses();
 
     @Query("""
-    select new com.gooroomees.neulbomgil_backend.domain.chat.dto.ChatRoomResponseDto(
+    select new com.gooroomees.neulbomgil_backend.chat.internal.dto.ChatRoomResponseDto(
         cr.roomId,
         u.userId,
         u.name,

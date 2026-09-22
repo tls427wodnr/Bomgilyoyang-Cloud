@@ -1,4 +1,4 @@
-package com.gooroomees.neulbomgil_backend.domain.chat.entity;
+package com.gooroomees.neulbomgil_backend.chat.internal.entity;
 
 import com.gooroomees.neulbomgil_backend.identity.UserAuth;
 import jakarta.persistence.*;

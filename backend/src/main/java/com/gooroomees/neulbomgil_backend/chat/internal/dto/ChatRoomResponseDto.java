@@ -1,4 +1,4 @@
-package com.gooroomees.neulbomgil_backend.domain.chat.dto;
+package com.gooroomees.neulbomgil_backend.chat.internal.dto;
 
 
 import java.time.LocalDateTime;

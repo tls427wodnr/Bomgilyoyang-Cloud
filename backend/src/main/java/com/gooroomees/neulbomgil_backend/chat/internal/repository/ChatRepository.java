@@ -1,6 +1,6 @@
-package com.gooroomees.neulbomgil_backend.domain.chat.repository;
+package com.gooroomees.neulbomgil_backend.chat.internal.repository;
 
-import com.gooroomees.neulbomgil_backend.domain.chat.entity.Chat;
+import com.gooroomees.neulbomgil_backend.chat.internal.entity.Chat;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
