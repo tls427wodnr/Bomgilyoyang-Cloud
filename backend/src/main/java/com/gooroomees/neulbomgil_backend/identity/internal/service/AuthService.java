@@ -10,16 +10,20 @@ import com.gooroomees.neulbomgil_backend.identity.internal.entity.RefreshToken;
 import com.gooroomees.neulbomgil_backend.identity.internal.entity.Role;
 import com.gooroomees.neulbomgil_backend.identity.internal.entity.Status;
 import com.gooroomees.neulbomgil_backend.identity.internal.entity.UserAuth;
+import com.gooroomees.neulbomgil_backend.identity.internal.repository.RefreshTokenRedisRepository;
 import com.gooroomees.neulbomgil_backend.identity.internal.repository.RefreshTokenRepository;
 import com.gooroomees.neulbomgil_backend.identity.internal.repository.UserAuthRepository;
 import com.gooroomees.neulbomgil_backend.identity.internal.security.JwtProvider;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.Duration;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +35,10 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final UserAuthService userAuthService;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final RefreshTokenRedisRepository refreshTokenRedisRepository;
+
+    @Value("${application.security.jwt.refresh-token-expiration}")
+    private long refreshTokenExpiration;
 
     @Transactional
     public String register(RegisterRequest request) {
@@ -75,6 +83,12 @@ public class AuthService {
                         token -> token.update(refreshToken),
                         () -> refreshTokenRepository.save(new RefreshToken(user.getUserId(), refreshToken))
                 );
+
+        refreshTokenRedisRepository.save(
+                user.getUserId(),
+                refreshToken,
+                Duration.ofMillis(refreshTokenExpiration)
+        );
 
         return JwtTokenResponse.builder()
                 .accessToken(accessToken)
