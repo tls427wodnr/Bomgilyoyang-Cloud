@@ -1,8 +1,8 @@
 package com.gooroomees.neulbomgil_backend.domain.admin.service;
 
 import com.gooroomees.neulbomgil_backend.domain.admin.dto.AdminUserResponseDto;
-import com.gooroomees.neulbomgil_backend.domain.board.repository.BoardRepository;
-import com.gooroomees.neulbomgil_backend.domain.reply.repository.ReplyRepository;
+import com.gooroomees.neulbomgil_backend.community.CommunityActivityCount;
+import com.gooroomees.neulbomgil_backend.community.CommunityStatistics;
 import com.gooroomees.neulbomgil_backend.identity.Role;
 import com.gooroomees.neulbomgil_backend.identity.Status;
 import com.gooroomees.neulbomgil_backend.identity.UserAdministration;
@@ -20,8 +20,7 @@ import java.util.List;
 public class AdminService {
 
     private final UserAdministration userAdministration;
-    private final BoardRepository boardRepository;
-    private final ReplyRepository replyRepository;
+    private final CommunityStatistics communityStatistics;
 
 
     public List<AdminUserResponseDto> getUsers() {
@@ -29,16 +28,15 @@ public class AdminService {
 
         List<AdminUserResponseDto> adminUserResponseDtoList = new ArrayList<>();
         for (UserSummary user : users) {
-            Long boardCount = boardRepository.countByUser_UserId(user.userId());
-            Long replyCount = replyRepository.countByUser_UserId(user.userId());
+            CommunityActivityCount activityCount = communityStatistics.countByUserId(user.userId());
 
             adminUserResponseDtoList.add(
                     new AdminUserResponseDto(
                             user.userId(),
                             user.name(),
                             user.email(),
-                            boardCount,
-                            replyCount,
+                            activityCount.boardCount(),
+                            activityCount.replyCount(),
                             user.status(),
                             user.createdAt().toString()
                     )
@@ -54,16 +52,15 @@ public class AdminService {
 
         List<AdminUserResponseDto> adminUserResponseDtoList = new ArrayList<>();
         for (UserSummary user : users) {
-            Long boardCount = boardRepository.countByUser_UserId(user.userId());
-            Long replyCount = replyRepository.countByUser_UserId(user.userId());
+            CommunityActivityCount activityCount = communityStatistics.countByUserId(user.userId());
 
             adminUserResponseDtoList.add(
                     new AdminUserResponseDto(
                             user.userId(),
                             user.name(),
                             user.email(),
-                            boardCount,
-                            replyCount,
+                            activityCount.boardCount(),
+                            activityCount.replyCount(),
                             user.status(),
                             user.createdAt().toString()
                     )
