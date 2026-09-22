@@ -1,4 +1,4 @@
-package com.gooroomees.neulbomgil_backend.global.config;
+package com.gooroomees.neulbomgil_backend.infrastructure.internal.config;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;

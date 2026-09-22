@@ -1,4 +1,4 @@
-package com.gooroomees.neulbomgil_backend.global.config;
+package com.gooroomees.neulbomgil_backend.infrastructure.internal.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

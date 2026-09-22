@@ -1,4 +1,4 @@
-package com.gooroomees.neulbomgil_backend.global.config;
+package com.gooroomees.neulbomgil_backend.infrastructure.internal.config;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
