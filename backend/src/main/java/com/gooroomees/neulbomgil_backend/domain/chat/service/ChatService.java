@@ -2,11 +2,11 @@ package com.gooroomees.neulbomgil_backend.domain.chat.service;
 
 
 import com.gooroomees.neulbomgil_backend.domain.auth.entity.UserAuth;
-import com.gooroomees.neulbomgil_backend.domain.auth.repository.UserChatRepository;
 import com.gooroomees.neulbomgil_backend.domain.chat.dto.ChatRequestDto;
 import com.gooroomees.neulbomgil_backend.domain.chat.dto.ChatResponseDto;
 import com.gooroomees.neulbomgil_backend.domain.chat.dto.ChatRoomResponseDto;
 import com.gooroomees.neulbomgil_backend.domain.chat.entity.Chat;
+import com.gooroomees.neulbomgil_backend.domain.chat.repository.ChatUserRepository;
 import com.gooroomees.neulbomgil_backend.domain.chat.repository.ChatRoomRepository;
 import com.gooroomees.neulbomgil_backend.domain.chat.repository.ChatRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,12 +23,12 @@ public class ChatService {
 
     private final ChatRoomRepository chatRoomRepository;
     private final ChatRepository chatRepository;
-    private final UserChatRepository userAuthRepository;
+    private final ChatUserRepository chatUserRepository;
 
     public ChatRoomResponseDto startChatRoom(Long userId) {
 
 
-        UserAuth user = userAuthRepository.findById(userId)
+        UserAuth user = chatUserRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("사용자 없음"));
 
 
@@ -86,7 +86,7 @@ public class ChatService {
 
         ChatRoom room = chatRoomRepository.findById(roomId).orElseThrow(() -> new RuntimeException("채팅방이 없습니다."));;
 
-        UserAuth sender = userAuthRepository.findById(userId)
+        UserAuth sender = chatUserRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("사용자 없음"));
 
         Chat chat = Chat.create(
