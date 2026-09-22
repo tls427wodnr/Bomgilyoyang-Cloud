@@ -1,4 +1,4 @@
-package com.gooroomees.neulbomgil_backend.domain.map.dto.request;
+package com.gooroomees.neulbomgil_backend.facility.internal.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

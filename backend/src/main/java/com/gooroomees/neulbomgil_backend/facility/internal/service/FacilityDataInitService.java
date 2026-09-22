@@ -1,9 +1,9 @@
-package com.gooroomees.neulbomgil_backend.domain.map.service;
+package com.gooroomees.neulbomgil_backend.facility.internal.service;
 
-import com.gooroomees.neulbomgil_backend.domain.map.dto.response.VWorldResponse;
-import com.gooroomees.neulbomgil_backend.domain.map.entity.Facility;
-import com.gooroomees.neulbomgil_backend.domain.map.repository.FacilityRepository;
-import com.gooroomees.neulbomgil_backend.domain.map.repository.ParkRepository;
+import com.gooroomees.neulbomgil_backend.facility.internal.dto.response.VWorldResponse;
+import com.gooroomees.neulbomgil_backend.facility.internal.entity.Facility;
+import com.gooroomees.neulbomgil_backend.facility.internal.repository.FacilityRepository;
+import com.gooroomees.neulbomgil_backend.facility.internal.repository.ParkRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

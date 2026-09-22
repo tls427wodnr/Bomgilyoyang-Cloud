@@ -10,7 +10,7 @@ import com.gooroomees.neulbomgil_backend.domain.favorite.dto.request.FavoriteDel
 import com.gooroomees.neulbomgil_backend.domain.favorite.dto.request.FavoriteRequest;
 import com.gooroomees.neulbomgil_backend.domain.favorite.dto.response.FavoriteResponse;
 import com.gooroomees.neulbomgil_backend.domain.favorite.service.FavoriteService;
-import com.gooroomees.neulbomgil_backend.domain.map.entity.Facility;
+import com.gooroomees.neulbomgil_backend.facility.internal.entity.Facility;
 import com.gooroomees.neulbomgil_backend.global.config.JwtAuthenticationFilter;
 import com.gooroomees.neulbomgil_backend.global.config.JwtProvider;
 import com.gooroomees.neulbomgil_backend.global.config.SecurityConfig;

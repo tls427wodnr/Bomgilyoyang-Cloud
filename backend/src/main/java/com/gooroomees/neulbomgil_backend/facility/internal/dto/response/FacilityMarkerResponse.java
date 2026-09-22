@@ -1,6 +1,6 @@
-package com.gooroomees.neulbomgil_backend.domain.map.dto.response;
+package com.gooroomees.neulbomgil_backend.facility.internal.dto.response;
 
-import com.gooroomees.neulbomgil_backend.domain.map.entity.Facility;
+import com.gooroomees.neulbomgil_backend.facility.internal.entity.Facility;
 import lombok.Builder;
 
 @Builder

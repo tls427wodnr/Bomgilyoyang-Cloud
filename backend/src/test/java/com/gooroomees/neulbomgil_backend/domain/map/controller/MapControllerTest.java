@@ -1,14 +1,15 @@
 package com.gooroomees.neulbomgil_backend.domain.map.controller;
 
 import com.gooroomees.neulbomgil_backend.domain.auth.repository.RefreshTokenRepository;
-import com.gooroomees.neulbomgil_backend.domain.map.dto.request.FacilitySearchRequest;
-import com.gooroomees.neulbomgil_backend.domain.map.dto.request.MarkerRequest;
-import com.gooroomees.neulbomgil_backend.domain.map.dto.request.NearbyParkRequest;
-import com.gooroomees.neulbomgil_backend.domain.map.dto.response.FacilityDetailResponse;
-import com.gooroomees.neulbomgil_backend.domain.map.dto.response.FacilityMarkerResponse;
-import com.gooroomees.neulbomgil_backend.domain.map.dto.response.FacilityResponse;
-import com.gooroomees.neulbomgil_backend.domain.map.dto.response.NearParkResponse;
-import com.gooroomees.neulbomgil_backend.domain.map.service.MapService;
+import com.gooroomees.neulbomgil_backend.facility.internal.controller.MapController;
+import com.gooroomees.neulbomgil_backend.facility.internal.dto.request.FacilitySearchRequest;
+import com.gooroomees.neulbomgil_backend.facility.internal.dto.request.MarkerRequest;
+import com.gooroomees.neulbomgil_backend.facility.internal.dto.request.NearbyParkRequest;
+import com.gooroomees.neulbomgil_backend.facility.internal.dto.response.FacilityDetailResponse;
+import com.gooroomees.neulbomgil_backend.facility.internal.dto.response.FacilityMarkerResponse;
+import com.gooroomees.neulbomgil_backend.facility.internal.dto.response.FacilityResponse;
+import com.gooroomees.neulbomgil_backend.facility.internal.dto.response.NearParkResponse;
+import com.gooroomees.neulbomgil_backend.facility.internal.service.MapService;
 import com.gooroomees.neulbomgil_backend.global.config.JwtAuthenticationFilter;
 import com.gooroomees.neulbomgil_backend.global.config.JwtProvider;
 import com.gooroomees.neulbomgil_backend.global.config.SecurityConfig;

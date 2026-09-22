@@ -1,4 +1,4 @@
-package com.gooroomees.neulbomgil_backend.domain.map.dto.request;
+package com.gooroomees.neulbomgil_backend.facility.internal.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;

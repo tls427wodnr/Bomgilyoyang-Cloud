@@ -1,8 +1,8 @@
-package com.gooroomees.neulbomgil_backend.domain.map.service;
+package com.gooroomees.neulbomgil_backend.facility.internal.service;
 
-import com.gooroomees.neulbomgil_backend.domain.map.dto.response.ParkResponse;
-import com.gooroomees.neulbomgil_backend.domain.map.entity.Park;
-import com.gooroomees.neulbomgil_backend.domain.map.repository.ParkRepository;
+import com.gooroomees.neulbomgil_backend.facility.internal.dto.response.ParkResponse;
+import com.gooroomees.neulbomgil_backend.facility.internal.entity.Park;
+import com.gooroomees.neulbomgil_backend.facility.internal.repository.ParkRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

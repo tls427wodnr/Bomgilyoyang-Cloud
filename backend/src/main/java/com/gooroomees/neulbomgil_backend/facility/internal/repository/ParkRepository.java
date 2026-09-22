@@ -1,6 +1,6 @@
-package com.gooroomees.neulbomgil_backend.domain.map.repository;
+package com.gooroomees.neulbomgil_backend.facility.internal.repository;
 
-import com.gooroomees.neulbomgil_backend.domain.map.entity.Park;
+import com.gooroomees.neulbomgil_backend.facility.internal.entity.Park;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

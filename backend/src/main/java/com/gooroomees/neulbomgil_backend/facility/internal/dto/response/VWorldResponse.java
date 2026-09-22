@@ -1,4 +1,4 @@
-package com.gooroomees.neulbomgil_backend.domain.map.dto.response;
+package com.gooroomees.neulbomgil_backend.facility.internal.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;

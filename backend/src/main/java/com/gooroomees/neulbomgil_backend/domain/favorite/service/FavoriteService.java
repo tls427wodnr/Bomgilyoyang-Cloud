@@ -2,12 +2,11 @@ package com.gooroomees.neulbomgil_backend.domain.favorite.service;
 
 import com.gooroomees.neulbomgil_backend.domain.favorite.dto.request.FavoriteDeleteRequest;
 import com.gooroomees.neulbomgil_backend.domain.favorite.dto.request.FavoriteRequest;
-import com.gooroomees.neulbomgil_backend.domain.favorite.dto.request.FavoriteSearchRequest;
 import com.gooroomees.neulbomgil_backend.domain.favorite.dto.response.FavoriteResponse;
 import com.gooroomees.neulbomgil_backend.domain.favorite.entity.Favorite;
 import com.gooroomees.neulbomgil_backend.domain.favorite.repository.FavoriteRepository;
-import com.gooroomees.neulbomgil_backend.domain.map.entity.Facility;
-import com.gooroomees.neulbomgil_backend.domain.map.repository.FacilityRepository;
+import com.gooroomees.neulbomgil_backend.facility.internal.entity.Facility;
+import com.gooroomees.neulbomgil_backend.facility.internal.repository.FacilityRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

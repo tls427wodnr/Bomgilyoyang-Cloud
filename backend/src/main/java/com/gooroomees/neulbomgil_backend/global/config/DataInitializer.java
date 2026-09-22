@@ -1,7 +1,7 @@
 package com.gooroomees.neulbomgil_backend.global.config;
 
-import com.gooroomees.neulbomgil_backend.domain.map.service.FacilityDataInitService;
-import com.gooroomees.neulbomgil_backend.domain.map.service.ParkDataInitService;
+import com.gooroomees.neulbomgil_backend.facility.internal.service.FacilityDataInitService;
+import com.gooroomees.neulbomgil_backend.facility.internal.service.ParkDataInitService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;

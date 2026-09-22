@@ -1,7 +1,7 @@
-package com.gooroomees.neulbomgil_backend.domain.map.repository;
+package com.gooroomees.neulbomgil_backend.facility.internal.repository;
 
-import com.gooroomees.neulbomgil_backend.domain.map.dto.request.FacilitySearchRequest;
-import com.gooroomees.neulbomgil_backend.domain.map.dto.response.FacilityResponse;
+import com.gooroomees.neulbomgil_backend.facility.internal.dto.request.FacilitySearchRequest;
+import com.gooroomees.neulbomgil_backend.facility.internal.dto.response.FacilityResponse;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.gooroomees.neulbomgil_backend.domain.map.entity.QFacility.facility;
+import static com.gooroomees.neulbomgil_backend.facility.internal.entity.QFacility.facility;
 
 @Repository
 @RequiredArgsConstructor
