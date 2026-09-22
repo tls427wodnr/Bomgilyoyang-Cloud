@@ -1,4 +1,4 @@
-package com.gooroomees.neulbomgil_backend.domain.auth.dto.request;
+package com.gooroomees.neulbomgil_backend.identity.internal.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

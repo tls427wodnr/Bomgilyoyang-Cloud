@@ -1,6 +1,6 @@
 package com.gooroomees.neulbomgil_backend.domain.chat.controller;
 
-import com.gooroomees.neulbomgil_backend.domain.auth.entity.UserAuth;
+import com.gooroomees.neulbomgil_backend.identity.UserAuth;
 import com.gooroomees.neulbomgil_backend.domain.chat.dto.ChatResponseDto;
 import com.gooroomees.neulbomgil_backend.domain.chat.dto.ChatRoomResponseDto;
 import com.gooroomees.neulbomgil_backend.domain.chat.service.ChatService;

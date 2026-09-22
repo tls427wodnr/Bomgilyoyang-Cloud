@@ -1,4 +1,4 @@
-package com.gooroomees.neulbomgil_backend.domain.auth.entity;
+package com.gooroomees.neulbomgil_backend.identity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

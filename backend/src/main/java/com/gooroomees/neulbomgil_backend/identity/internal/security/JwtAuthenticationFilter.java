@@ -1,4 +1,4 @@
-package com.gooroomees.neulbomgil_backend.global.config;
+package com.gooroomees.neulbomgil_backend.identity.internal.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

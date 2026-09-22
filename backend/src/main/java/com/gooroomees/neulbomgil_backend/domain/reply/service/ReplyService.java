@@ -1,6 +1,6 @@
 package com.gooroomees.neulbomgil_backend.domain.reply.service;
 
-import com.gooroomees.neulbomgil_backend.domain.auth.entity.UserAuth;
+import com.gooroomees.neulbomgil_backend.identity.UserAuth;
 import com.gooroomees.neulbomgil_backend.domain.board.entity.Board;
 import com.gooroomees.neulbomgil_backend.domain.board.repository.BoardRepository;
 import com.gooroomees.neulbomgil_backend.domain.board.service.BoardService;

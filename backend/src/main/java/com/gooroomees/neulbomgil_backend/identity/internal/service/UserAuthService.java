@@ -1,7 +1,7 @@
-package com.gooroomees.neulbomgil_backend.domain.auth.service;
+package com.gooroomees.neulbomgil_backend.identity.internal.service;
 
-import com.gooroomees.neulbomgil_backend.domain.auth.entity.UserAuth;
-import com.gooroomees.neulbomgil_backend.domain.auth.repository.UserAuthRepository;
+import com.gooroomees.neulbomgil_backend.identity.UserAuth;
+import com.gooroomees.neulbomgil_backend.identity.internal.repository.UserAuthRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

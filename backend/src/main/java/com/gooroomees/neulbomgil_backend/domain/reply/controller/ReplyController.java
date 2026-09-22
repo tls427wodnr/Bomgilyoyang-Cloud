@@ -1,6 +1,6 @@
 package com.gooroomees.neulbomgil_backend.domain.reply.controller;
 
-import com.gooroomees.neulbomgil_backend.domain.auth.entity.UserAuth;
+import com.gooroomees.neulbomgil_backend.identity.UserAuth;
 import com.gooroomees.neulbomgil_backend.domain.reply.dto.ReplyRequestDTO;
 import com.gooroomees.neulbomgil_backend.domain.reply.dto.ReplyResponseDTO;
 import com.gooroomees.neulbomgil_backend.domain.reply.service.ReplyService;

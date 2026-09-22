@@ -1,6 +1,6 @@
 package com.gooroomees.neulbomgil_backend.domain.admin.dto;
 
-import com.gooroomees.neulbomgil_backend.domain.auth.entity.Status;
+import com.gooroomees.neulbomgil_backend.identity.Status;
 
 
 public record AdminUserResponseDto(

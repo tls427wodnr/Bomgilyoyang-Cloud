@@ -1,6 +1,6 @@
 package com.gooroomees.neulbomgil_backend.domain.reply.entity;
 
-import com.gooroomees.neulbomgil_backend.domain.auth.entity.UserAuth;
+import com.gooroomees.neulbomgil_backend.identity.UserAuth;
 import com.gooroomees.neulbomgil_backend.domain.board.entity.Board;
 import jakarta.persistence.*;
 import lombok.AccessLevel;

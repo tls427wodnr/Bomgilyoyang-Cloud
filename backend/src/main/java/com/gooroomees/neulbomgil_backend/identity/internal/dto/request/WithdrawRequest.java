@@ -1,4 +1,4 @@
-package com.gooroomees.neulbomgil_backend.domain.auth.dto.request;
+package com.gooroomees.neulbomgil_backend.identity.internal.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PasswordChangeRequest {
-    private String oldPassword;
-    private String newPassword;
+public class WithdrawRequest {
+    private String password;
 }

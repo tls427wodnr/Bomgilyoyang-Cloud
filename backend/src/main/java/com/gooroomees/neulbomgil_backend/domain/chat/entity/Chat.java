@@ -1,6 +1,6 @@
 package com.gooroomees.neulbomgil_backend.domain.chat.entity;
 
-import com.gooroomees.neulbomgil_backend.domain.auth.entity.UserAuth;
+import com.gooroomees.neulbomgil_backend.identity.UserAuth;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;

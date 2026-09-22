@@ -1,6 +1,6 @@
-package com.gooroomees.neulbomgil_backend.global.config;
+package com.gooroomees.neulbomgil_backend.identity.internal.security;
 
-import com.gooroomees.neulbomgil_backend.domain.auth.repository.UserAuthRepository;
+import com.gooroomees.neulbomgil_backend.identity.internal.repository.UserAuthRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

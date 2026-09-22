@@ -1,6 +1,6 @@
 package com.gooroomees.neulbomgil_backend.domain.favorite.controller;
 
-import com.gooroomees.neulbomgil_backend.domain.auth.entity.UserAuth;
+import com.gooroomees.neulbomgil_backend.identity.UserAuth;
 import com.gooroomees.neulbomgil_backend.domain.favorite.dto.request.FavoriteDeleteRequest;
 import com.gooroomees.neulbomgil_backend.domain.favorite.dto.request.FavoriteRequest;
 import com.gooroomees.neulbomgil_backend.domain.favorite.dto.response.FavoriteResponse;

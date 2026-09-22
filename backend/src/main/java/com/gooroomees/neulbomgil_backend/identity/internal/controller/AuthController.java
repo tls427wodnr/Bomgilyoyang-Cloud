@@ -1,14 +1,14 @@
-package com.gooroomees.neulbomgil_backend.domain.auth.controller;
+package com.gooroomees.neulbomgil_backend.identity.internal.controller;
 
-import com.gooroomees.neulbomgil_backend.domain.auth.dto.request.LoginRequest;
-import com.gooroomees.neulbomgil_backend.domain.auth.dto.request.PasswordChangeRequest;
-import com.gooroomees.neulbomgil_backend.domain.auth.dto.request.RegisterRequest;
-import com.gooroomees.neulbomgil_backend.domain.auth.dto.request.UpdateUserRequest;
-import com.gooroomees.neulbomgil_backend.domain.auth.dto.request.WithdrawRequest;
-import com.gooroomees.neulbomgil_backend.domain.auth.dto.response.JwtTokenResponse;
-import com.gooroomees.neulbomgil_backend.domain.auth.dto.response.UserResponse;
-import com.gooroomees.neulbomgil_backend.domain.auth.entity.UserAuth;
-import com.gooroomees.neulbomgil_backend.domain.auth.service.AuthService;
+import com.gooroomees.neulbomgil_backend.identity.internal.dto.request.LoginRequest;
+import com.gooroomees.neulbomgil_backend.identity.internal.dto.request.PasswordChangeRequest;
+import com.gooroomees.neulbomgil_backend.identity.internal.dto.request.RegisterRequest;
+import com.gooroomees.neulbomgil_backend.identity.internal.dto.request.UpdateUserRequest;
+import com.gooroomees.neulbomgil_backend.identity.internal.dto.request.WithdrawRequest;
+import com.gooroomees.neulbomgil_backend.identity.internal.dto.response.JwtTokenResponse;
+import com.gooroomees.neulbomgil_backend.identity.internal.dto.response.UserResponse;
+import com.gooroomees.neulbomgil_backend.identity.UserAuth;
+import com.gooroomees.neulbomgil_backend.identity.internal.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;

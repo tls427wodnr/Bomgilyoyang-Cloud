@@ -1,7 +1,7 @@
-package com.gooroomees.neulbomgil_backend.domain.auth.service;
+package com.gooroomees.neulbomgil_backend.identity.internal.service;
 
-import com.gooroomees.neulbomgil_backend.domain.auth.entity.RefreshToken;
-import com.gooroomees.neulbomgil_backend.domain.auth.repository.RefreshTokenRepository;
+import com.gooroomees.neulbomgil_backend.identity.internal.entity.RefreshToken;
+import com.gooroomees.neulbomgil_backend.identity.internal.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

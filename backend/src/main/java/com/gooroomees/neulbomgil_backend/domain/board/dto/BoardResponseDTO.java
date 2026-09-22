@@ -2,7 +2,7 @@ package com.gooroomees.neulbomgil_backend.domain.board.dto;
 
 import com.gooroomees.neulbomgil_backend.domain.board.entity.Board;
 import com.gooroomees.neulbomgil_backend.domain.board.entity.BoardFile;
-import com.gooroomees.neulbomgil_backend.domain.auth.entity.UserAuth;
+import com.gooroomees.neulbomgil_backend.identity.UserAuth;
 import lombok.Getter;
 
 import java.time.LocalDateTime;

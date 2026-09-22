@@ -1,6 +1,6 @@
 package com.gooroomees.neulbomgil_backend.domain.board.repository;
 
-import com.gooroomees.neulbomgil_backend.domain.auth.entity.UserAuth;
+import com.gooroomees.neulbomgil_backend.identity.UserAuth;
 import com.gooroomees.neulbomgil_backend.domain.board.entity.Board;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -35,7 +35,7 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
             countQuery = "SELECT COUNT(b) FROM Board b WHERE b.title LIKE %:keyword% OR b.content LIKE %:keyword%")
     Page<Board> findByKeywordWithUser(@Param("keyword") String keyword, Pageable pageable);
 
-    Long countByUser(UserAuth user);
+    Long countByUser_UserId(Long userId);
 
     Page<Board> findByUser(UserAuth user, Pageable pageable);
 }

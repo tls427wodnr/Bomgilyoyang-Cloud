@@ -1,4 +1,4 @@
-package com.gooroomees.neulbomgil_backend.domain.auth.dto.response;
+package com.gooroomees.neulbomgil_backend.identity.internal.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class JwtTokenResponse {
-    private String accessToken;
-    private String refreshToken;
+public class UpdateUserRequest {
+    private String name;
 }

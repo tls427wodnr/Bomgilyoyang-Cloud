@@ -1,6 +1,6 @@
 package com.gooroomees.neulbomgil_backend.domain.board.repository;
 
-import com.gooroomees.neulbomgil_backend.domain.auth.entity.UserAuth;
+import com.gooroomees.neulbomgil_backend.identity.UserAuth;
 import com.gooroomees.neulbomgil_backend.domain.board.entity.Board;
 import com.gooroomees.neulbomgil_backend.domain.board.entity.BoardLike;
 import org.springframework.data.jpa.repository.JpaRepository;

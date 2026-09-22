@@ -1,6 +1,6 @@
-package com.gooroomees.neulbomgil_backend.domain.auth.repository;
+package com.gooroomees.neulbomgil_backend.identity.internal.repository;
 
-import com.gooroomees.neulbomgil_backend.domain.auth.entity.RefreshToken;
+import com.gooroomees.neulbomgil_backend.identity.internal.entity.RefreshToken;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

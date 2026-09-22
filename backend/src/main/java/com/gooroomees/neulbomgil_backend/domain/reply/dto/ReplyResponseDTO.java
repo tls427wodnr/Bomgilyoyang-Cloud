@@ -1,6 +1,6 @@
 package com.gooroomees.neulbomgil_backend.domain.reply.dto;
 
-import com.gooroomees.neulbomgil_backend.domain.auth.entity.UserAuth;
+import com.gooroomees.neulbomgil_backend.identity.UserAuth;
 import com.gooroomees.neulbomgil_backend.domain.reply.entity.Reply;
 import lombok.Getter;
 

@@ -1,7 +1,7 @@
-package com.gooroomees.neulbomgil_backend.domain.auth.service;
+package com.gooroomees.neulbomgil_backend.identity.internal.service;
 
-import com.gooroomees.neulbomgil_backend.domain.auth.entity.UserAuth;
-import com.gooroomees.neulbomgil_backend.domain.auth.repository.UserAuthRepository;
+import com.gooroomees.neulbomgil_backend.identity.UserAuth;
+import com.gooroomees.neulbomgil_backend.identity.internal.repository.UserAuthRepository;
 import com.gooroomees.neulbomgil_backend.identity.UserDirectory;
 import com.gooroomees.neulbomgil_backend.identity.UserSummary;
 import lombok.RequiredArgsConstructor;
@@ -34,8 +34,8 @@ class UserDirectoryService implements UserDirectory {
                 user.getUserId(),
                 user.getName(),
                 user.getEmail(),
-                user.getRole().name(),
-                user.getStatus().name(),
+                user.getRole(),
+                user.getStatus(),
                 user.getCreatedAt()
         );
     }

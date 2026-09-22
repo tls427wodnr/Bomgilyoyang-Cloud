@@ -1,19 +1,19 @@
 package com.gooroomees.neulbomgil_backend.domain.favorite.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gooroomees.neulbomgil_backend.domain.auth.entity.Role;
-import com.gooroomees.neulbomgil_backend.domain.auth.entity.Status;
-import com.gooroomees.neulbomgil_backend.domain.auth.entity.UserAuth;
-import com.gooroomees.neulbomgil_backend.domain.auth.repository.RefreshTokenRepository;
-import com.gooroomees.neulbomgil_backend.domain.auth.repository.UserAuthRepository;
+import com.gooroomees.neulbomgil_backend.identity.Role;
+import com.gooroomees.neulbomgil_backend.identity.Status;
+import com.gooroomees.neulbomgil_backend.identity.UserAuth;
+import com.gooroomees.neulbomgil_backend.identity.internal.repository.RefreshTokenRepository;
+import com.gooroomees.neulbomgil_backend.identity.internal.repository.UserAuthRepository;
 import com.gooroomees.neulbomgil_backend.domain.favorite.dto.request.FavoriteDeleteRequest;
 import com.gooroomees.neulbomgil_backend.domain.favorite.dto.request.FavoriteRequest;
 import com.gooroomees.neulbomgil_backend.domain.favorite.dto.response.FavoriteResponse;
 import com.gooroomees.neulbomgil_backend.domain.favorite.service.FavoriteService;
 import com.gooroomees.neulbomgil_backend.facility.FacilitySummary;
-import com.gooroomees.neulbomgil_backend.global.config.JwtAuthenticationFilter;
-import com.gooroomees.neulbomgil_backend.global.config.JwtProvider;
-import com.gooroomees.neulbomgil_backend.global.config.SecurityConfig;
+import com.gooroomees.neulbomgil_backend.identity.internal.security.JwtAuthenticationFilter;
+import com.gooroomees.neulbomgil_backend.identity.internal.security.JwtProvider;
+import com.gooroomees.neulbomgil_backend.identity.internal.security.SecurityConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.ComponentScan;

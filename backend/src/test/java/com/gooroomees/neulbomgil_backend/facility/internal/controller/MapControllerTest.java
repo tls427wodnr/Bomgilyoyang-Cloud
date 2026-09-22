@@ -1,6 +1,6 @@
 package com.gooroomees.neulbomgil_backend.facility.internal.controller;
 
-import com.gooroomees.neulbomgil_backend.domain.auth.repository.RefreshTokenRepository;
+import com.gooroomees.neulbomgil_backend.identity.internal.repository.RefreshTokenRepository;
 import com.gooroomees.neulbomgil_backend.facility.internal.controller.MapController;
 import com.gooroomees.neulbomgil_backend.facility.internal.dto.request.FacilitySearchRequest;
 import com.gooroomees.neulbomgil_backend.facility.internal.dto.request.MarkerRequest;
@@ -10,9 +10,9 @@ import com.gooroomees.neulbomgil_backend.facility.internal.dto.response.Facility
 import com.gooroomees.neulbomgil_backend.facility.internal.dto.response.FacilityResponse;
 import com.gooroomees.neulbomgil_backend.facility.internal.dto.response.NearParkResponse;
 import com.gooroomees.neulbomgil_backend.facility.internal.service.MapService;
-import com.gooroomees.neulbomgil_backend.global.config.JwtAuthenticationFilter;
-import com.gooroomees.neulbomgil_backend.global.config.JwtProvider;
-import com.gooroomees.neulbomgil_backend.global.config.SecurityConfig;
+import com.gooroomees.neulbomgil_backend.identity.internal.security.JwtAuthenticationFilter;
+import com.gooroomees.neulbomgil_backend.identity.internal.security.JwtProvider;
+import com.gooroomees.neulbomgil_backend.identity.internal.security.SecurityConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
