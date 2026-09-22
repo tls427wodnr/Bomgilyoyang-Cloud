@@ -1,4 +1,4 @@
-package com.gooroomees.neulbomgil_backend.domain.favorite.dto.request;
+package com.gooroomees.neulbomgil_backend.favorite.internal.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;

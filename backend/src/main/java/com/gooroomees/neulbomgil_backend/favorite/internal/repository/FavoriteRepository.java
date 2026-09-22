@@ -1,6 +1,6 @@
-package com.gooroomees.neulbomgil_backend.domain.favorite.repository;
+package com.gooroomees.neulbomgil_backend.favorite.internal.repository;
 
-import com.gooroomees.neulbomgil_backend.domain.favorite.entity.Favorite;
+import com.gooroomees.neulbomgil_backend.favorite.internal.entity.Favorite;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

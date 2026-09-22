@@ -1,4 +1,4 @@
-package com.gooroomees.neulbomgil_backend.domain.favorite.entity;
+package com.gooroomees.neulbomgil_backend.favorite.internal.entity;
 
 import jakarta.persistence.*;
 import lombok.*;

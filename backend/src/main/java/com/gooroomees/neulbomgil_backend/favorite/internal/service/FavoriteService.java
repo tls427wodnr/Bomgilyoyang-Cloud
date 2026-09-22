@@ -1,10 +1,10 @@
-package com.gooroomees.neulbomgil_backend.domain.favorite.service;
+package com.gooroomees.neulbomgil_backend.favorite.internal.service;
 
-import com.gooroomees.neulbomgil_backend.domain.favorite.dto.request.FavoriteDeleteRequest;
-import com.gooroomees.neulbomgil_backend.domain.favorite.dto.request.FavoriteRequest;
-import com.gooroomees.neulbomgil_backend.domain.favorite.dto.response.FavoriteResponse;
-import com.gooroomees.neulbomgil_backend.domain.favorite.entity.Favorite;
-import com.gooroomees.neulbomgil_backend.domain.favorite.repository.FavoriteRepository;
+import com.gooroomees.neulbomgil_backend.favorite.internal.dto.request.FavoriteDeleteRequest;
+import com.gooroomees.neulbomgil_backend.favorite.internal.dto.request.FavoriteRequest;
+import com.gooroomees.neulbomgil_backend.favorite.internal.dto.response.FavoriteResponse;
+import com.gooroomees.neulbomgil_backend.favorite.internal.entity.Favorite;
+import com.gooroomees.neulbomgil_backend.favorite.internal.repository.FavoriteRepository;
 import com.gooroomees.neulbomgil_backend.facility.FacilityLookup;
 import com.gooroomees.neulbomgil_backend.facility.FacilitySummary;
 import lombok.RequiredArgsConstructor;

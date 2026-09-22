@@ -1,10 +1,10 @@
-package com.gooroomees.neulbomgil_backend.domain.favorite.controller;
+package com.gooroomees.neulbomgil_backend.favorite.internal.controller;
 
 import com.gooroomees.neulbomgil_backend.identity.UserAuth;
-import com.gooroomees.neulbomgil_backend.domain.favorite.dto.request.FavoriteDeleteRequest;
-import com.gooroomees.neulbomgil_backend.domain.favorite.dto.request.FavoriteRequest;
-import com.gooroomees.neulbomgil_backend.domain.favorite.dto.response.FavoriteResponse;
-import com.gooroomees.neulbomgil_backend.domain.favorite.service.FavoriteService;
+import com.gooroomees.neulbomgil_backend.favorite.internal.dto.request.FavoriteDeleteRequest;
+import com.gooroomees.neulbomgil_backend.favorite.internal.dto.request.FavoriteRequest;
+import com.gooroomees.neulbomgil_backend.favorite.internal.dto.response.FavoriteResponse;
+import com.gooroomees.neulbomgil_backend.favorite.internal.service.FavoriteService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

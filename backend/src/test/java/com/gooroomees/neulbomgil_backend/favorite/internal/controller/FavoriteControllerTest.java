@@ -1,4 +1,4 @@
-package com.gooroomees.neulbomgil_backend.domain.favorite.controller;
+package com.gooroomees.neulbomgil_backend.favorite.internal.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gooroomees.neulbomgil_backend.identity.Role;
@@ -6,10 +6,10 @@ import com.gooroomees.neulbomgil_backend.identity.Status;
 import com.gooroomees.neulbomgil_backend.identity.UserAuth;
 import com.gooroomees.neulbomgil_backend.identity.internal.repository.RefreshTokenRepository;
 import com.gooroomees.neulbomgil_backend.identity.internal.repository.UserAuthRepository;
-import com.gooroomees.neulbomgil_backend.domain.favorite.dto.request.FavoriteDeleteRequest;
-import com.gooroomees.neulbomgil_backend.domain.favorite.dto.request.FavoriteRequest;
-import com.gooroomees.neulbomgil_backend.domain.favorite.dto.response.FavoriteResponse;
-import com.gooroomees.neulbomgil_backend.domain.favorite.service.FavoriteService;
+import com.gooroomees.neulbomgil_backend.favorite.internal.dto.request.FavoriteDeleteRequest;
+import com.gooroomees.neulbomgil_backend.favorite.internal.dto.request.FavoriteRequest;
+import com.gooroomees.neulbomgil_backend.favorite.internal.dto.response.FavoriteResponse;
+import com.gooroomees.neulbomgil_backend.favorite.internal.service.FavoriteService;
 import com.gooroomees.neulbomgil_backend.facility.FacilitySummary;
 import com.gooroomees.neulbomgil_backend.identity.internal.security.JwtAuthenticationFilter;
 import com.gooroomees.neulbomgil_backend.identity.internal.security.JwtProvider;

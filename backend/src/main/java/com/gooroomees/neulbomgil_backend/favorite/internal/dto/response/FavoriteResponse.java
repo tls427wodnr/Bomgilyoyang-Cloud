@@ -1,4 +1,4 @@
-package com.gooroomees.neulbomgil_backend.domain.favorite.dto.response;
+package com.gooroomees.neulbomgil_backend.favorite.internal.dto.response;
 
 import com.gooroomees.neulbomgil_backend.facility.FacilitySummary;
 import lombok.Builder;
