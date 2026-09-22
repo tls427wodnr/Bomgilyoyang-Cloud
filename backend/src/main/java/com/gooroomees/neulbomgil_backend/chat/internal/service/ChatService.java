@@ -1,12 +1,12 @@
 package com.gooroomees.neulbomgil_backend.chat.internal.service;
 
 
-import com.gooroomees.neulbomgil_backend.identity.UserAuth;
+import com.gooroomees.neulbomgil_backend.identity.UserDirectory;
+import com.gooroomees.neulbomgil_backend.identity.UserSummary;
 import com.gooroomees.neulbomgil_backend.chat.internal.dto.ChatRequestDto;
 import com.gooroomees.neulbomgil_backend.chat.internal.dto.ChatResponseDto;
 import com.gooroomees.neulbomgil_backend.chat.internal.dto.ChatRoomResponseDto;
 import com.gooroomees.neulbomgil_backend.chat.internal.entity.Chat;
-import com.gooroomees.neulbomgil_backend.chat.internal.repository.ChatUserRepository;
 import com.gooroomees.neulbomgil_backend.chat.internal.repository.ChatRoomRepository;
 import com.gooroomees.neulbomgil_backend.chat.internal.repository.ChatRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,27 +23,26 @@ public class ChatService {
 
     private final ChatRoomRepository chatRoomRepository;
     private final ChatRepository chatRepository;
-    private final ChatUserRepository chatUserRepository;
+    private final UserDirectory userDirectory;
 
     public ChatRoomResponseDto startChatRoom(Long userId) {
 
 
-        UserAuth user = chatUserRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("사용자 없음"));
+        UserSummary user = findUser(userId);
 
 
         ChatRoom chatRoom = chatRoomRepository
-                .findChatRoom(user)
+                .findChatRoom(userId)
                 .orElseGet(() -> chatRoomRepository.save(
                         ChatRoom.builder()
-                                .user(user)
+                                .userId(userId)
                                 .build()
                 ));
 
         return new ChatRoomResponseDto(
                 chatRoom.getRoomId(),
-                user.getUserId(),
-                user.getName(),
+                user.userId(),
+                user.name(),
                 null,
                 null,
                 false
@@ -60,7 +59,7 @@ public class ChatService {
                     new ChatResponseDto(
                             chat.getChatId(),
                             roomId,
-                            chat.getSender().getUserId(),
+                            chat.getSenderId(),
                             chat.getMessage(),
                             chat.getCreatedAt(),
                             chat.getReadAt()
@@ -74,11 +73,9 @@ public class ChatService {
     public List<ChatRoomResponseDto> getAllChatRooms() {
 
 
-        List<ChatRoomResponseDto> result =
-                chatRoomRepository.findAllChatRoomResponses();
-
-
-        return result;
+        return chatRoomRepository.findAllChatRoomResponses().stream()
+                .map(this::withUserName)
+                .toList();
     }
 
     @Transactional
@@ -86,12 +83,11 @@ public class ChatService {
 
         ChatRoom room = chatRoomRepository.findById(roomId).orElseThrow(() -> new RuntimeException("채팅방이 없습니다."));;
 
-        UserAuth sender = chatUserRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("사용자 없음"));
+        findUser(userId);
 
         Chat chat = Chat.create(
                 room,
-                sender,
+                userId,
                 requestDto.message()
         );
 
@@ -119,6 +115,23 @@ public class ChatService {
     public ChatRoomResponseDto getChatRoom(Long roomId) {
 
         return chatRoomRepository.findChatRoomResponse(roomId)
+                .map(this::withUserName)
                 .orElseThrow(() -> new RuntimeException("채팅방 없음"));
+    }
+
+    private UserSummary findUser(Long userId) {
+        return userDirectory.findById(userId)
+                .orElseThrow(() -> new RuntimeException("사용자 없음"));
+    }
+
+    private ChatRoomResponseDto withUserName(ChatRoomResponseDto room) {
+        return new ChatRoomResponseDto(
+                room.roomId(),
+                room.userId(),
+                findUser(room.userId()).name(),
+                room.lastMessage(),
+                room.lastMessageAt(),
+                room.unread()
+        );
     }
 }

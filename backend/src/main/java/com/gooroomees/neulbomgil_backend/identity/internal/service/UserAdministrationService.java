@@ -1,9 +1,9 @@
 package com.gooroomees.neulbomgil_backend.identity.internal.service;
 
-import com.gooroomees.neulbomgil_backend.identity.Role;
-import com.gooroomees.neulbomgil_backend.identity.Status;
+import com.gooroomees.neulbomgil_backend.identity.internal.entity.Role;
+import com.gooroomees.neulbomgil_backend.identity.internal.entity.Status;
 import com.gooroomees.neulbomgil_backend.identity.UserAdministration;
-import com.gooroomees.neulbomgil_backend.identity.UserAuth;
+import com.gooroomees.neulbomgil_backend.identity.internal.entity.UserAuth;
 import com.gooroomees.neulbomgil_backend.identity.UserSummary;
 import com.gooroomees.neulbomgil_backend.identity.internal.repository.UserAuthRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,15 +20,15 @@ class UserAdministrationService implements UserAdministration {
     private final UserAuthRepository userAuthRepository;
 
     @Override
-    public List<UserSummary> findUsersByRole(Role role) {
-        return userAuthRepository.findByRole(role).stream()
+    public List<UserSummary> findRegularUsers() {
+        return userAuthRepository.findByRole(Role.USER).stream()
                 .map(this::toSummary)
                 .toList();
     }
 
     @Override
-    public List<UserSummary> findUsersByStatus(Status status) {
-        return userAuthRepository.findByStatus(status).stream()
+    public List<UserSummary> findRemovedUsers() {
+        return userAuthRepository.findByStatus(Status.REMOVED).stream()
                 .map(this::toSummary)
                 .toList();
     }
@@ -51,8 +51,8 @@ class UserAdministrationService implements UserAdministration {
                 user.getUserId(),
                 user.getName(),
                 user.getEmail(),
-                user.getRole(),
-                user.getStatus(),
+                user.getRole().name(),
+                user.getStatus().name(),
                 user.getCreatedAt()
         );
     }

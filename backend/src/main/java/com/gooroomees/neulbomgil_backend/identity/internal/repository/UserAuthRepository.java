@@ -1,8 +1,8 @@
 package com.gooroomees.neulbomgil_backend.identity.internal.repository;
 
-import com.gooroomees.neulbomgil_backend.identity.Role;
-import com.gooroomees.neulbomgil_backend.identity.Status;
-import com.gooroomees.neulbomgil_backend.identity.UserAuth;
+import com.gooroomees.neulbomgil_backend.identity.internal.entity.Role;
+import com.gooroomees.neulbomgil_backend.identity.internal.entity.Status;
+import com.gooroomees.neulbomgil_backend.identity.internal.entity.UserAuth;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

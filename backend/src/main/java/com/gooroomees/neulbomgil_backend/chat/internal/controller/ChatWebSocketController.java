@@ -23,7 +23,7 @@ public class ChatWebSocketController {
     //pub/chatrooms/{roomId}/messages
 //    @MessageMapping("/chatrooms/{roomId}/messages")
 //    public void sendMessage(
-//            @DestinationVariable Long roomId,@AuthenticationPrincipal UserAuth userAuth,
+//            @DestinationVariable Long roomId,@AuthenticationPrincipal AuthenticatedUser user,
 //            ChatRequestDto requestDto
 //    ){
 //
@@ -48,7 +48,7 @@ public class ChatWebSocketController {
     //pub/chatrooms/{roomId}/messages
     @MessageMapping("/chatrooms/{roomId}/messages")
     public void sendMessage(
-            @DestinationVariable Long roomId, @Header("userId") Long userId,/*@AuthenticationPrincipal UserAuth userAuth,*/
+            @DestinationVariable Long roomId, @Header("userId") Long userId,/*@AuthenticationPrincipal AuthenticatedUser user,*/
             ChatRequestDto requestDto
     ) {
 

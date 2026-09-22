@@ -1,6 +1,5 @@
 package com.gooroomees.neulbomgil_backend.community.internal.reply.dto;
 
-import com.gooroomees.neulbomgil_backend.identity.UserAuth;
 import com.gooroomees.neulbomgil_backend.community.internal.reply.entity.Reply;
 import lombok.Getter;
 
@@ -16,13 +15,13 @@ public class ReplyResponseDTO {
     private LocalDateTime createdAt;
     private boolean isOwner;  // ← 추가: 본인 댓글 여부
 
-    public ReplyResponseDTO(Reply reply, UserAuth currentUser){
+    public ReplyResponseDTO(Reply reply, String userName, Long currentUserId){
         this.replyId = reply.getReplyId();
         this.boardId = reply.getBoard().getBoardid();
-        this.userId = reply.getUser().getUserId();
-        this.name = reply.getUser().getName();
+        this.userId = reply.getUserId();
+        this.name = userName;
         this.content = reply.getContent();
         this.createdAt = reply.getCreatedAt();
-        this.isOwner = (currentUser != null) && reply.getUser().getUserId().equals(currentUser.getUserId());
+        this.isOwner = (currentUserId != null) && reply.getUserId().equals(currentUserId);
     }
 }

@@ -1,9 +1,7 @@
 package com.gooroomees.neulbomgil_backend.favorite.internal.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gooroomees.neulbomgil_backend.identity.Role;
-import com.gooroomees.neulbomgil_backend.identity.Status;
-import com.gooroomees.neulbomgil_backend.identity.UserAuth;
+import com.gooroomees.neulbomgil_backend.identity.AuthenticatedUser;
 import com.gooroomees.neulbomgil_backend.identity.internal.repository.RefreshTokenRepository;
 import com.gooroomees.neulbomgil_backend.identity.internal.repository.UserAuthRepository;
 import com.gooroomees.neulbomgil_backend.favorite.internal.dto.request.FavoriteDeleteRequest;
@@ -14,17 +12,28 @@ import com.gooroomees.neulbomgil_backend.facility.FacilitySummary;
 import com.gooroomees.neulbomgil_backend.identity.internal.security.JwtAuthenticationFilter;
 import com.gooroomees.neulbomgil_backend.identity.internal.security.JwtProvider;
 import com.gooroomees.neulbomgil_backend.identity.internal.security.SecurityConfig;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
+import org.springframework.context.annotation.Import;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.TestSecurityContextHolder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.core.MethodParameter;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.context.request.NativeWebRequest;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.method.support.ModelAndViewContainer;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.List;
 
@@ -32,7 +41,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.testSecurityContext;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -47,8 +56,33 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
                 )
         }
 )
-@WithMockUser
+@Import(FavoriteControllerTest.AuthenticatedUserArgumentResolverConfig.class)
 class FavoriteControllerTest {
+
+    @TestConfiguration
+    static class AuthenticatedUserArgumentResolverConfig implements WebMvcConfigurer {
+
+        @Override
+        public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+            resolvers.add(new HandlerMethodArgumentResolver() {
+                @Override
+                public boolean supportsParameter(MethodParameter parameter) {
+                    return parameter.hasParameterAnnotation(AuthenticationPrincipal.class)
+                            && parameter.getParameterType().equals(AuthenticatedUser.class);
+                }
+
+                @Override
+                public Object resolveArgument(
+                        MethodParameter parameter,
+                        ModelAndViewContainer mavContainer,
+                        NativeWebRequest webRequest,
+                        org.springframework.web.bind.support.WebDataBinderFactory binderFactory
+                ) {
+                    return new AuthenticatedUser(100L, "user@example.com", "테스트 사용자", "USER");
+                }
+            });
+        }
+    }
 
     @Autowired
     private MockMvc mockMvc;
@@ -70,15 +104,17 @@ class FavoriteControllerTest {
     @MockitoBean
     private UserAuthRepository userAuthRepository;
 
-    private UserAuth authenticatedUser() {
-        return UserAuth.builder()
-                .userId(100L)
-                .email("user@example.com")
-                .password("password")
-                .name("테스트 사용자")
-                .role(Role.USER)
-                .status(Status.ACTIVE)
-                .build();
+    private AuthenticatedUser authenticatedUser() {
+        return new AuthenticatedUser(100L, "user@example.com", "테스트 사용자", "USER");
+    }
+
+    @BeforeEach
+    void setUpAuthentication() {
+        TestSecurityContextHolder.setAuthentication(new UsernamePasswordAuthenticationToken(
+                authenticatedUser(),
+                null,
+                List.of(new SimpleGrantedAuthority("USER"))
+        ));
     }
 
     @Test
@@ -94,7 +130,7 @@ class FavoriteControllerTest {
         // when & then
         mockMvc.perform(post("/api/favorites")
                         .with(csrf())
-                        .with(user(authenticatedUser()))
+                        .with(testSecurityContext())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
@@ -111,7 +147,7 @@ class FavoriteControllerTest {
         // when & then
         mockMvc.perform(post("/api/favorites")
                         .with(csrf())
-                        .with(user(authenticatedUser()))
+                        .with(testSecurityContext())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidRequest)))
                 .andExpect(status().isBadRequest()); // @Valid에 의해 400 Bad Request 발생
@@ -147,7 +183,7 @@ class FavoriteControllerTest {
 
         // when & then
         mockMvc.perform(get("/api/favorites/me")
-                        .with(user(authenticatedUser()))
+                        .with(testSecurityContext())
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(1))
@@ -172,7 +208,7 @@ class FavoriteControllerTest {
         // when & then
         mockMvc.perform(delete("/api/favorites/me")
                         .with(csrf())
-                        .with(user(authenticatedUser()))
+                        .with(testSecurityContext())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isNoContent());
@@ -188,7 +224,7 @@ class FavoriteControllerTest {
         // when & then
         mockMvc.perform(delete("/api/favorites/me")
                         .with(csrf())
-                        .with(user(authenticatedUser()))
+                        .with(testSecurityContext())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidRequest)))
                 .andExpect(status().isBadRequest()); // 400 Bad Request

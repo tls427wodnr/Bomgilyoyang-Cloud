@@ -1,6 +1,6 @@
 package com.gooroomees.neulbomgil_backend.identity.internal.service;
 
-import com.gooroomees.neulbomgil_backend.identity.UserAuth;
+import com.gooroomees.neulbomgil_backend.identity.internal.entity.UserAuth;
 import com.gooroomees.neulbomgil_backend.identity.internal.repository.UserAuthRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

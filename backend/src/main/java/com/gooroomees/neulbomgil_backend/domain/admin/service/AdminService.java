@@ -3,8 +3,6 @@ package com.gooroomees.neulbomgil_backend.domain.admin.service;
 import com.gooroomees.neulbomgil_backend.domain.admin.dto.AdminUserResponseDto;
 import com.gooroomees.neulbomgil_backend.community.CommunityActivityCount;
 import com.gooroomees.neulbomgil_backend.community.CommunityStatistics;
-import com.gooroomees.neulbomgil_backend.identity.Role;
-import com.gooroomees.neulbomgil_backend.identity.Status;
 import com.gooroomees.neulbomgil_backend.identity.UserAdministration;
 import com.gooroomees.neulbomgil_backend.identity.UserSummary;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +22,7 @@ public class AdminService {
 
 
     public List<AdminUserResponseDto> getUsers() {
-        List<UserSummary> users = userAdministration.findUsersByRole(Role.USER);
+        List<UserSummary> users = userAdministration.findRegularUsers();
 
         List<AdminUserResponseDto> adminUserResponseDtoList = new ArrayList<>();
         for (UserSummary user : users) {
@@ -48,7 +46,7 @@ public class AdminService {
 
 
     public List<AdminUserResponseDto> getDeletedUsers() {
-        List<UserSummary> users = userAdministration.findUsersByStatus(Status.REMOVED);
+        List<UserSummary> users = userAdministration.findRemovedUsers();
 
         List<AdminUserResponseDto> adminUserResponseDtoList = new ArrayList<>();
         for (UserSummary user : users) {

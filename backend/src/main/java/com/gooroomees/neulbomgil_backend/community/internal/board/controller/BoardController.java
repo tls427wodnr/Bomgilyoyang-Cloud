@@ -1,6 +1,6 @@
 package com.gooroomees.neulbomgil_backend.community.internal.board.controller;
 
-import com.gooroomees.neulbomgil_backend.identity.UserAuth;
+import com.gooroomees.neulbomgil_backend.identity.AuthenticatedUser;
 import com.gooroomees.neulbomgil_backend.community.internal.board.dto.BoardRequestDTO;
 import com.gooroomees.neulbomgil_backend.community.internal.board.dto.BoardResponseDTO;
 import com.gooroomees.neulbomgil_backend.community.internal.board.service.BoardService;
@@ -61,8 +61,8 @@ public class BoardController {
     @GetMapping("/{boardId}")
     public ResponseEntity<BoardResponseDTO> getOneBoard(
             @PathVariable Long boardId,
-            @AuthenticationPrincipal UserAuth userAuth) {
-        return ResponseEntity.ok(boardService.getOneBoard(boardId, userAuth));
+            @AuthenticationPrincipal AuthenticatedUser user) {
+        return ResponseEntity.ok(boardService.getOneBoard(boardId, userId(user)));
     }
 
     // 검색
@@ -82,8 +82,8 @@ public class BoardController {
     public ResponseEntity<Void> createBoard(
             @RequestPart("data") BoardRequestDTO dto,
             @RequestPart(value = "files", required = false) List<MultipartFile> files,
-            @AuthenticationPrincipal UserAuth userAuth) {
-        boardService.createBoard(dto, userAuth, files);
+            @AuthenticationPrincipal AuthenticatedUser user) {
+        boardService.createBoard(dto, user.userId(), files);
         return ResponseEntity.ok().build();
     }
 
@@ -95,8 +95,8 @@ public class BoardController {
             @PathVariable Long boardId,
             @RequestPart("data") BoardRequestDTO dto,
             @RequestPart(value = "files", required = false) List<MultipartFile> files,
-            @AuthenticationPrincipal UserAuth userAuth) {
-        boardService.updateBoard(dto, boardId, userAuth, files);
+            @AuthenticationPrincipal AuthenticatedUser user) {
+        boardService.updateBoard(dto, boardId, user.userId(), files);
         return ResponseEntity.ok().build();
     }
 
@@ -106,8 +106,8 @@ public class BoardController {
     @DeleteMapping("/{boardId}")
     public ResponseEntity<Void> deleteBoard(
             @PathVariable Long boardId,
-            @AuthenticationPrincipal UserAuth userAuth) {
-        boardService.deleteBoard(boardId, userAuth);
+            @AuthenticationPrincipal AuthenticatedUser user) {
+        boardService.deleteBoard(boardId, user.userId());
         return ResponseEntity.noContent().build();
     }
     // 좋아요 토글
@@ -115,8 +115,8 @@ public class BoardController {
     @PostMapping("/{boardId}/likes")
     public ResponseEntity<Map<String, Object>> toggleLike(
             @PathVariable Long boardId,
-            @AuthenticationPrincipal UserAuth userAuth) {
-        boolean liked = boardService.toggleLike(boardId, userAuth);
+            @AuthenticationPrincipal AuthenticatedUser user) {
+        boolean liked = boardService.toggleLike(boardId, user.userId());
         return ResponseEntity.ok(Map.of("liked", liked));
     }
 
@@ -124,8 +124,8 @@ public class BoardController {
     @GetMapping("/me")
     public ResponseEntity<Page<BoardResponseDTO>> getMyBoards(
             @RequestParam(defaultValue = "0") int page,
-            @AuthenticationPrincipal UserAuth userAuth) {
-        return ResponseEntity.ok(boardService.getMyBoards(userAuth, page));
+            @AuthenticationPrincipal AuthenticatedUser user) {
+        return ResponseEntity.ok(boardService.getMyBoards(user.userId(), page));
     }
 
     // 파일 다운로드
@@ -146,8 +146,8 @@ public class BoardController {
     @DeleteMapping("/files/{fileId}")
     public ResponseEntity<Void> deleteFile(
             @PathVariable Long fileId,
-            @AuthenticationPrincipal UserAuth userAuth) {
-        boardService.deleteFile(fileId, userAuth);
+            @AuthenticationPrincipal AuthenticatedUser user) {
+        boardService.deleteFile(fileId, user.userId());
         return ResponseEntity.noContent().build();
     }
 //이미지
@@ -160,5 +160,9 @@ public class BoardController {
                 .header(HttpHeaders.CONTENT_TYPE,
                         contentType != null ? contentType : "application/octet-stream")
                 .body(resource);
+    }
+
+    private Long userId(AuthenticatedUser user) {
+        return user == null ? null : user.userId();
     }
 }

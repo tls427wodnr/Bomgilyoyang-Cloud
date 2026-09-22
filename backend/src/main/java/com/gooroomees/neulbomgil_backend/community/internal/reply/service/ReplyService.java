@@ -1,6 +1,6 @@
 package com.gooroomees.neulbomgil_backend.community.internal.reply.service;
 
-import com.gooroomees.neulbomgil_backend.identity.UserAuth;
+import com.gooroomees.neulbomgil_backend.identity.UserDirectory;
 import com.gooroomees.neulbomgil_backend.community.internal.board.entity.Board;
 import com.gooroomees.neulbomgil_backend.community.internal.board.repository.BoardRepository;
 import com.gooroomees.neulbomgil_backend.community.internal.reply.dto.ReplyRequestDTO;
@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ReplyService {
     private final ReplyRepository replyRepository;
     private final BoardRepository boardRepository;
+    private final UserDirectory userDirectory;
     private static final int PAGE_SIZE = 5;
 
     //존재하지 않는 게시글
@@ -35,33 +36,44 @@ public class ReplyService {
     }
 
     //댓글 목록 조회
-    public Page<ReplyResponseDTO> getReplies(Long boardId, int page, UserAuth currentUser) {
+    public Page<ReplyResponseDTO> getReplies(Long boardId, int page, Long currentUserId) {
         Pageable pageable = PageRequest.of(page, PAGE_SIZE, Sort.by("createdAt").descending());
-        return replyRepository.findByBoard_Boardid(boardId, pageable).map(reply -> new ReplyResponseDTO(reply, currentUser));
+        return replyRepository.findByBoard_Boardid(boardId, pageable)
+                .map(reply -> new ReplyResponseDTO(
+                        reply,
+                        findUserName(reply.getUserId()),
+                        currentUserId
+                ));
+    }
+
+    private String findUserName(Long userId) {
+        return userDirectory.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."))
+                .name();
     }
 
     //댓글 작성
     @Transactional
-    public void createReply(Long boardId, ReplyRequestDTO dto, UserAuth userAuth) {
+    public void createReply(Long boardId, ReplyRequestDTO dto, Long userId) {
         Board board = findBoard(boardId);
-        Reply reply = Reply.create(board, userAuth, dto.getContent());
+        Reply reply = Reply.create(board, userId, dto.getContent());
         replyRepository.save(reply);
     }
 
     //댓글 수정
     @Transactional
-    public void updateReply(Long boardId, Long replyId, ReplyRequestDTO dto, UserAuth userAuth) {
+    public void updateReply(Long boardId, Long replyId, ReplyRequestDTO dto, Long userId) {
         findBoard(boardId);
         Reply reply = findReply(replyId);//댓글 있는지 확인
-        reply.validateOwner(userAuth);// 본인이 작성한 댓글 맞는지 확인
+        reply.validateOwner(userId);// 본인이 작성한 댓글 맞는지 확인
         reply.update(dto.getContent());// 위의 조건이 다 해당된다면 수정 가능
     }
     //댓글 삭제
     @Transactional
-    public void deleteReply(Long boardId, Long replyId, UserAuth userAuth){
+    public void deleteReply(Long boardId, Long replyId, Long userId){
         findBoard(boardId);
         Reply reply = findReply(replyId);//댓글 있는지 확인
-        reply.validateOwner(userAuth);// 본인이 작성한 댓글 맞는지 확인
+        reply.validateOwner(userId);// 본인이 작성한 댓글 맞는지 확인
         replyRepository.delete(reply);
         }
     }

@@ -1,5 +1,7 @@
 package com.gooroomees.neulbomgil_backend.identity.internal.security;
 
+import com.gooroomees.neulbomgil_backend.identity.AuthenticatedUser;
+import com.gooroomees.neulbomgil_backend.identity.internal.entity.UserAuth;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -8,7 +10,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
@@ -44,14 +45,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private void authenticate(String accessToken, HttpServletRequest request) {
         try {
             String email = jwtProvider.extractUsername(accessToken);
-            UserDetails user = userDetailsService.loadUserByUsername(email);
+            UserAuth user = (UserAuth) userDetailsService.loadUserByUsername(email);
 
             if (!jwtProvider.isTokenValid(accessToken, user)) {
                 return;
             }
 
+            AuthenticatedUser principal = new AuthenticatedUser(
+                    user.getUserId(),
+                    user.getEmail(),
+                    user.getName(),
+                    user.getRole().name()
+            );
             UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+                    new UsernamePasswordAuthenticationToken(principal, null, user.getAuthorities());
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authentication);
         } catch (RuntimeException ignored) {

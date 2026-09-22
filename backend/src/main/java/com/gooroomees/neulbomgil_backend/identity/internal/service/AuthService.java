@@ -7,9 +7,9 @@ import com.gooroomees.neulbomgil_backend.identity.internal.dto.request.UpdateUse
 import com.gooroomees.neulbomgil_backend.identity.internal.dto.request.WithdrawRequest;
 import com.gooroomees.neulbomgil_backend.identity.internal.dto.response.JwtTokenResponse;
 import com.gooroomees.neulbomgil_backend.identity.internal.entity.RefreshToken;
-import com.gooroomees.neulbomgil_backend.identity.Role;
-import com.gooroomees.neulbomgil_backend.identity.Status;
-import com.gooroomees.neulbomgil_backend.identity.UserAuth;
+import com.gooroomees.neulbomgil_backend.identity.internal.entity.Role;
+import com.gooroomees.neulbomgil_backend.identity.internal.entity.Status;
+import com.gooroomees.neulbomgil_backend.identity.internal.entity.UserAuth;
 import com.gooroomees.neulbomgil_backend.identity.internal.repository.RefreshTokenRepository;
 import com.gooroomees.neulbomgil_backend.identity.internal.repository.UserAuthRepository;
 import com.gooroomees.neulbomgil_backend.identity.internal.security.JwtProvider;
@@ -103,21 +103,22 @@ public class AuthService {
     }
 
     @Transactional
-    public boolean changePassword(UserAuth user, PasswordChangeRequest request) {
-        if (user == null) {
+    public boolean changePassword(Long userId, PasswordChangeRequest request) {
+        if (userId == null) {
             return false;
         }
 
+        UserAuth savedUser = userAuthRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+
         try {
             authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(user.getEmail(), request.getOldPassword())
+                    new UsernamePasswordAuthenticationToken(savedUser.getEmail(), request.getOldPassword())
             );
         } catch (AuthenticationException exception) {
             return false;
         }
 
-        UserAuth savedUser = userAuthRepository.findById(user.getUserId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
         savedUser.changePassword(passwordEncoder.encode(request.getNewPassword()));
         return true;
     }
@@ -131,15 +132,15 @@ public class AuthService {
     }
 
     @Transactional
-    public void updateUserInfo(UserAuth user, UpdateUserRequest request) {
-        UserAuth savedUser = userAuthRepository.findById(user.getUserId())
+    public void updateUserInfo(Long userId, UpdateUserRequest request) {
+        UserAuth savedUser = userAuthRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
         savedUser.updateName(request.getName());
     }
 
     @Transactional
-    public boolean withdraw(UserAuth user, WithdrawRequest request) {
-        UserAuth savedUser = userAuthRepository.findById(user.getUserId())
+    public boolean withdraw(Long userId, WithdrawRequest request) {
+        UserAuth savedUser = userAuthRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
 
         if (!passwordEncoder.matches(request.getPassword(), savedUser.getPassword())) {

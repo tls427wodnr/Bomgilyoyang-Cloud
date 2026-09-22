@@ -1,6 +1,6 @@
 package com.gooroomees.neulbomgil_backend.favorite.internal.controller;
 
-import com.gooroomees.neulbomgil_backend.identity.UserAuth;
+import com.gooroomees.neulbomgil_backend.identity.AuthenticatedUser;
 import com.gooroomees.neulbomgil_backend.favorite.internal.dto.request.FavoriteDeleteRequest;
 import com.gooroomees.neulbomgil_backend.favorite.internal.dto.request.FavoriteRequest;
 import com.gooroomees.neulbomgil_backend.favorite.internal.dto.response.FavoriteResponse;
@@ -26,12 +26,12 @@ public class FavoriteController {
     )
     @PostMapping
     public ResponseEntity<Long> addFavorite(
-            @AuthenticationPrincipal UserAuth userAuth,
+            @AuthenticationPrincipal AuthenticatedUser user,
             @Valid @RequestBody FavoriteRequest request) {
-        if (userAuth == null || userAuth.getUserId() == null) {
+        if (user == null || user.userId() == null) {
             return ResponseEntity.status(401).build();
         }
-        return ResponseEntity.ok(favoriteService.saveFavorite(userAuth.getUserId(), request));
+        return ResponseEntity.ok(favoriteService.saveFavorite(user.userId(), request));
     }
 
     @Operation(
@@ -39,12 +39,12 @@ public class FavoriteController {
     )
     @GetMapping("/me")
     public ResponseEntity<List<FavoriteResponse>> getFavorites(
-            @AuthenticationPrincipal UserAuth userAuth
+            @AuthenticationPrincipal AuthenticatedUser user
     ) {
-        if (userAuth == null || userAuth.getUserId() == null) {
+        if (user == null || user.userId() == null) {
             return ResponseEntity.status(401).build();
         }
-        return ResponseEntity.ok(favoriteService.getUserFavoritesWithDetail(userAuth.getUserId()));
+        return ResponseEntity.ok(favoriteService.getUserFavoritesWithDetail(user.userId()));
     }
 
     @Operation(
@@ -52,12 +52,12 @@ public class FavoriteController {
     )
     @DeleteMapping("/me")
     public ResponseEntity<Void> removeFavorite(
-            @AuthenticationPrincipal UserAuth userAuth,
+            @AuthenticationPrincipal AuthenticatedUser user,
             @Valid @RequestBody FavoriteDeleteRequest request) {
-        if (userAuth == null || userAuth.getUserId() == null) {
+        if (user == null || user.userId() == null) {
             return ResponseEntity.status(401).build();
         }
-        favoriteService.deleteFavorite(userAuth.getUserId(), request);
+        favoriteService.deleteFavorite(user.userId(), request);
         return ResponseEntity.noContent().build();
     }
 }

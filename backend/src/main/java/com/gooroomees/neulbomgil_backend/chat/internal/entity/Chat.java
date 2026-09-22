@@ -1,6 +1,5 @@
 package com.gooroomees.neulbomgil_backend.chat.internal.entity;
 
-import com.gooroomees.neulbomgil_backend.identity.UserAuth;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -22,9 +21,8 @@ public class Chat {
     @JoinColumn(name = "room_id", nullable = false)
     private ChatRoom chatRoom;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private UserAuth sender;
+    @Column(name = "user_id", nullable = false)
+    private Long senderId;
 
 
     @Column(name = "message", columnDefinition = "TEXT")
@@ -37,12 +35,12 @@ public class Chat {
     private LocalDateTime readAt;
 
     public static Chat create(ChatRoom chatRoom,
-                              UserAuth sender,
+                              Long senderId,
                               String message) {
 
         Chat chat = new Chat();
         chat.chatRoom = chatRoom;
-        chat.sender = sender;
+        chat.senderId = senderId;
         chat.message = message;
         chat.createdAt = LocalDateTime.now();
 

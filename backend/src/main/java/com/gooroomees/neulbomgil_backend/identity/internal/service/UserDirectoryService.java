@@ -1,6 +1,6 @@
 package com.gooroomees.neulbomgil_backend.identity.internal.service;
 
-import com.gooroomees.neulbomgil_backend.identity.UserAuth;
+import com.gooroomees.neulbomgil_backend.identity.internal.entity.UserAuth;
 import com.gooroomees.neulbomgil_backend.identity.internal.repository.UserAuthRepository;
 import com.gooroomees.neulbomgil_backend.identity.UserDirectory;
 import com.gooroomees.neulbomgil_backend.identity.UserSummary;
@@ -34,8 +34,8 @@ class UserDirectoryService implements UserDirectory {
                 user.getUserId(),
                 user.getName(),
                 user.getEmail(),
-                user.getRole(),
-                user.getStatus(),
+                user.getRole().name(),
+                user.getStatus().name(),
                 user.getCreatedAt()
         );
     }

@@ -1,7 +1,6 @@
 package com.gooroomees.neulbomgil_backend.chat.internal.repository;
 
 
-import com.gooroomees.neulbomgil_backend.identity.UserAuth;
 import com.gooroomees.neulbomgil_backend.chat.internal.dto.ChatRoomResponseDto;
 import com.gooroomees.neulbomgil_backend.chat.internal.entity.ChatRoom;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,10 +13,10 @@ import java.util.Optional;
 public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
 
     @Query("""
-select cr from ChatRoom cr  where cr.user = :user 
+select cr from ChatRoom cr where cr.userId = :userId
 
 """)
-    Optional<ChatRoom> findChatRoom( @Param("user") UserAuth user);
+    Optional<ChatRoom> findChatRoom(@Param("userId") Long userId);
 
     List<ChatRoom> findAllByOrderByLastMessageAtDesc();
 
@@ -32,8 +31,8 @@ select cr from ChatRoom cr where cr.roomId = :roomId
     @Query("""
     select new com.gooroomees.neulbomgil_backend.chat.internal.dto.ChatRoomResponseDto(
         cr.roomId,
-        u.userId,
-        u.name,
+        cr.userId,
+        null,
         c.message,
         cr.lastMessageAt,
         case
@@ -42,7 +41,6 @@ select cr from ChatRoom cr where cr.roomId = :roomId
         end
     )
     from ChatRoom cr
-    join cr.user u
     left join Chat c
         on c.chatRoom = cr
        and c.createdAt = (
@@ -53,8 +51,8 @@ select cr from ChatRoom cr where cr.roomId = :roomId
     left join Chat unreadChat
         on unreadChat.chatRoom = cr
        and unreadChat.readAt is null
-       and unreadChat.sender = u
-    group by cr.roomId, u.userId, u.name, c.message, cr.lastMessageAt
+       and unreadChat.senderId = cr.userId
+    group by cr.roomId, cr.userId, c.message, cr.lastMessageAt
     order by cr.lastMessageAt desc
 """)
     List<ChatRoomResponseDto> findAllChatRoomResponses();
@@ -62,14 +60,13 @@ select cr from ChatRoom cr where cr.roomId = :roomId
     @Query("""
     select new com.gooroomees.neulbomgil_backend.chat.internal.dto.ChatRoomResponseDto(
         cr.roomId,
-        u.userId,
-        u.name,
+        cr.userId,
+        null,
         null,
         cr.lastMessageAt,
         false
     )
     from ChatRoom cr
-    join cr.user u
     where cr.roomId = :roomId
 """)
     Optional<ChatRoomResponseDto> findChatRoomResponse(Long roomId);

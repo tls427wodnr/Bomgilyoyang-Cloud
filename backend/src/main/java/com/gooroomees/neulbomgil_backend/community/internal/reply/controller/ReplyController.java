@@ -1,6 +1,6 @@
 package com.gooroomees.neulbomgil_backend.community.internal.reply.controller;
 
-import com.gooroomees.neulbomgil_backend.identity.UserAuth;
+import com.gooroomees.neulbomgil_backend.identity.AuthenticatedUser;
 import com.gooroomees.neulbomgil_backend.community.internal.reply.dto.ReplyRequestDTO;
 import com.gooroomees.neulbomgil_backend.community.internal.reply.dto.ReplyResponseDTO;
 import com.gooroomees.neulbomgil_backend.community.internal.reply.service.ReplyService;
@@ -27,9 +27,9 @@ public class ReplyController {
     public ResponseEntity<Page<ReplyResponseDTO>> getReplies(
             @PathVariable Long boardId,
             @RequestParam(defaultValue = "0") int page,
-            @AuthenticationPrincipal UserAuth userAuth)
+            @AuthenticationPrincipal AuthenticatedUser user)
     {
-        return ResponseEntity.ok(replyService.getReplies(boardId, page, userAuth));
+        return ResponseEntity.ok(replyService.getReplies(boardId, page, userId(user)));
     }
     // 댓글 작성
     @Operation(summary = "댓글 작성",
@@ -38,8 +38,8 @@ public class ReplyController {
     public ResponseEntity<Void> createReply(
             @PathVariable Long boardId,
             @RequestBody ReplyRequestDTO dto,
-            @AuthenticationPrincipal UserAuth userAuth) {
-        replyService.createReply(boardId, dto, userAuth);
+            @AuthenticationPrincipal AuthenticatedUser user) {
+        replyService.createReply(boardId, dto, user.userId());
         return ResponseEntity.ok().build();
     }
     // 댓글 수정
@@ -50,8 +50,8 @@ public class ReplyController {
             @PathVariable Long boardId,
             @PathVariable Long replyId,
             @RequestBody ReplyRequestDTO dto,
-            @AuthenticationPrincipal UserAuth userAuth){
-        replyService.updateReply(boardId, replyId, dto, userAuth);
+            @AuthenticationPrincipal AuthenticatedUser user){
+        replyService.updateReply(boardId, replyId, dto, user.userId());
         return ResponseEntity.ok().build();
     }
     // 댓글 삭제
@@ -61,8 +61,12 @@ public class ReplyController {
     public ResponseEntity<Void> deleteReply(
             @PathVariable Long boardId,
             @PathVariable Long replyId,
-            @AuthenticationPrincipal UserAuth userAuth) {
-        replyService.deleteReply(boardId, replyId, userAuth);
+            @AuthenticationPrincipal AuthenticatedUser user) {
+        replyService.deleteReply(boardId, replyId, user.userId());
         return ResponseEntity.noContent().build();
+    }
+
+    private Long userId(AuthenticatedUser user) {
+        return user == null ? null : user.userId();
     }
 }

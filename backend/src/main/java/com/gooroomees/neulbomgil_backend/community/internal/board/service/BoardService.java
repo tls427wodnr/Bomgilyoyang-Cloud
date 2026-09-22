@@ -1,6 +1,6 @@
 package com.gooroomees.neulbomgil_backend.community.internal.board.service;
 
-import com.gooroomees.neulbomgil_backend.identity.UserAuth;
+import com.gooroomees.neulbomgil_backend.identity.UserDirectory;
 import com.gooroomees.neulbomgil_backend.community.internal.board.dto.BoardRequestDTO;
 import com.gooroomees.neulbomgil_backend.community.internal.board.dto.BoardResponseDTO;
 import com.gooroomees.neulbomgil_backend.community.internal.board.entity.Board;
@@ -40,6 +40,7 @@ public class BoardService {
     private final BoardLikeRepository boardLikeRepository;
     private final ReplyRepository replyRepository;   // 댓글 수 조회용
     private final BoardFileRepository boardFileRepository; //파일 업로드 용
+    private final UserDirectory userDirectory;
     private static final int PAGE_SIZE = 15;
 
     @Value("${file.upload-dir:uploads}")
@@ -55,7 +56,13 @@ public class BoardService {
     // 댓글 수를 포함한 BoardResponse 변환
     private BoardResponseDTO toResponse(Board board) {
         long replyCount = replyRepository.countByBoard(board);
-        return new BoardResponseDTO(board, replyCount);
+        return new BoardResponseDTO(board, findUserName(board.getUserId()), replyCount);
+    }
+
+    private String findUserName(Long userId) {
+        return userDirectory.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."))
+                .name();
     }
 
     // 최신순 (디폴트)
@@ -80,14 +87,21 @@ public class BoardService {
 
     // 조회수 증가 + 좋아요 여부 + 첨부파일
     @Transactional
-    public BoardResponseDTO getOneBoard(Long boardId, UserAuth userAuth) {
+    public BoardResponseDTO getOneBoard(Long boardId, Long currentUserId) {
         Board board = findBoard(boardId);
         board.increaseCnt();
         long replyCount = replyRepository.countByBoard(board);
-        boolean likedByMe = (userAuth != null)
-                && boardLikeRepository.existsByBoardAndUser(board, userAuth);
+        boolean likedByMe = (currentUserId != null)
+                && boardLikeRepository.existsByBoardAndUserId(board, currentUserId);
         List<BoardFile> files = boardFileRepository.findByBoard(board);
-        return new BoardResponseDTO(board, replyCount, likedByMe, files, userAuth);
+        return new BoardResponseDTO(
+                board,
+                findUserName(board.getUserId()),
+                replyCount,
+                likedByMe,
+                files,
+                currentUserId
+        );
         // ← currentUser 추가
     }
 
@@ -100,27 +114,27 @@ public class BoardService {
 
     // 글 작성
     @Transactional
-    public void createBoard(BoardRequestDTO dto, UserAuth userAuth, List<MultipartFile> files) {
-        Board board = Board.create(userAuth, dto.getTitle(), dto.getContent());
+    public void createBoard(BoardRequestDTO dto, Long userId, List<MultipartFile> files) {
+        Board board = Board.create(userId, dto.getTitle(), dto.getContent());
         boardRepository.save(board);
         saveFiles(board, files);
     }
 
     // 글 수정
     @Transactional
-    public void updateBoard(BoardRequestDTO dto, Long boardId, UserAuth userAuth,
+    public void updateBoard(BoardRequestDTO dto, Long boardId, Long userId,
                             List<MultipartFile> files) {
         Board board = findBoard(boardId);
-        board.validateOwner(userAuth);
+        board.validateOwner(userId);
         board.update(dto.getTitle(), dto.getContent());
         saveFiles(board, files);
     }
 
     // 글 삭제
     @Transactional
-    public void deleteBoard(Long boardId, UserAuth userAuth) {
+    public void deleteBoard(Long boardId, Long userId) {
         Board board = findBoard(boardId);
-        board.validateOwner(userAuth);
+        board.validateOwner(userId);
 
         // 첨부파일 실제 파일 삭제
         List<BoardFile> files = boardFileRepository.findByBoard(board);
@@ -139,26 +153,26 @@ public class BoardService {
 
     // 좋아요 토글 (눌렀으면 취소, 안 눌렀으면 추가)
     @Transactional
-    public boolean toggleLike(Long boardId, UserAuth userAuth) {
+    public boolean toggleLike(Long boardId, Long userId) {
         Board board = findBoard(boardId);
-        Optional<BoardLike> existing = boardLikeRepository.findByBoardAndUser(board, userAuth);
+        Optional<BoardLike> existing = boardLikeRepository.findByBoardAndUserId(board, userId);
 
         if (existing.isPresent()) {
             boardLikeRepository.delete(existing.get());
             board.decreaseLikeCnt();
             return false;
         } else {
-            boardLikeRepository.save(BoardLike.create(board, userAuth));
+            boardLikeRepository.save(BoardLike.create(board, userId));
             board.increaseLikeCnt();
             return true;
         }
     }
     //파일 개별 삭제 (수정 화면에서)
     @Transactional
-    public void deleteFile(Long fileId, UserAuth userAuth) {
+    public void deleteFile(Long fileId, Long userId) {
         BoardFile file = boardFileRepository.findById(fileId)
                 .orElseThrow(() -> new IllegalArgumentException("파일이 존재하지 않습니다."));
-        file.getBoard().validateOwner(userAuth);
+        file.getBoard().validateOwner(userId);
         try {
             Files.deleteIfExists(Paths.get(file.getFilePath()));
         } catch (IOException e) {
@@ -211,9 +225,9 @@ public class BoardService {
         }
     }
 
-    public Page<BoardResponseDTO> getMyBoards(UserAuth userAuth, int page) {
+    public Page<BoardResponseDTO> getMyBoards(Long userId, int page) {
         Pageable pageable = PageRequest.of(page, PAGE_SIZE, Sort.by("createdAt").descending());
-        return boardRepository.findByUser(userAuth, pageable)
+        return boardRepository.findByUserId(userId, pageable)
                 .map(this::toResponse);
     }
 }

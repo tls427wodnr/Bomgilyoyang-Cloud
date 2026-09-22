@@ -25,7 +25,7 @@ public interface ChatRepository extends JpaRepository<Chat, Long> {
 update Chat  c
 set c.readAt = CURRENT_TIMESTAMP
 where c.chatRoom.roomId = :roomId
-and c.sender.userId != :senderId
+and c.senderId != :senderId
 and c.readAt is null
 """
     )
@@ -35,8 +35,8 @@ and c.readAt is null
 @Query("""
     select count(c) > 0
     from Chat c
-    where c.chatRoom.user.userId = :userId
-    and c.sender.userId != :userId
+    where c.chatRoom.userId = :userId
+    and c.senderId != :userId
     and c.readAt is null
 """)
 boolean existsUnreadChatByUserId(@Param("userId") Long userId);

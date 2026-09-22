@@ -19,8 +19,8 @@ class CommunityStatisticsService implements CommunityStatistics {
     @Override
     public CommunityActivityCount countByUserId(Long userId) {
         return new CommunityActivityCount(
-                boardRepository.countByUser_UserId(userId),
-                replyRepository.countByUser_UserId(userId)
+                boardRepository.countByUserId(userId),
+                replyRepository.countByUserId(userId)
         );
     }
 }

@@ -1,6 +1,5 @@
 package com.gooroomees.neulbomgil_backend.community.internal.board.entity;
 
-import com.gooroomees.neulbomgil_backend.identity.UserAuth;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -23,14 +22,13 @@ public class BoardLike {
     @JoinColumn(name = "board_id")
     private Board board;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private UserAuth user;
+    @Column(name = "user_id")
+    private Long userId;
 
-    public static BoardLike create(Board board, UserAuth user) {
+    public static BoardLike create(Board board, Long userId) {
         BoardLike like = new BoardLike();
         like.board = board;
-        like.user = user;
+        like.userId = userId;
         return like;
     }
 }

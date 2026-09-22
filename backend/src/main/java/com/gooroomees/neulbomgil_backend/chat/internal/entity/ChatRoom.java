@@ -1,6 +1,5 @@
 package com.gooroomees.neulbomgil_backend.chat.internal.entity;
 
-import com.gooroomees.neulbomgil_backend.identity.UserAuth;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,9 +22,8 @@ public class ChatRoom {
 
 
 
-  @ManyToOne(fetch = FetchType.LAZY)
-   @JoinColumn(name = "user_id", nullable = false)
-    private UserAuth  user;
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
 
 
     @Column(name = "last_message_at")

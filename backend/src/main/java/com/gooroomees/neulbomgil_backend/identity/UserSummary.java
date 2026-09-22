@@ -6,8 +6,8 @@ public record UserSummary(
         Long userId,
         String name,
         String email,
-        Role role,
-        Status status,
+        String role,
+        String status,
         LocalDateTime createdAt
 ) {
 }

@@ -7,7 +7,7 @@ import com.gooroomees.neulbomgil_backend.identity.internal.dto.request.UpdateUse
 import com.gooroomees.neulbomgil_backend.identity.internal.dto.request.WithdrawRequest;
 import com.gooroomees.neulbomgil_backend.identity.internal.dto.response.JwtTokenResponse;
 import com.gooroomees.neulbomgil_backend.identity.internal.dto.response.UserResponse;
-import com.gooroomees.neulbomgil_backend.identity.UserAuth;
+import com.gooroomees.neulbomgil_backend.identity.AuthenticatedUser;
 import com.gooroomees.neulbomgil_backend.identity.internal.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -56,12 +56,12 @@ public class AuthController {
 
     @Operation(summary = "현재 로그인한 사용자 정보 조회")
     @GetMapping("/me")
-    public ResponseEntity<UserResponse> getMyInfo(@AuthenticationPrincipal UserAuth user) {
+    public ResponseEntity<UserResponse> getMyInfo(@AuthenticationPrincipal AuthenticatedUser user) {
         return ResponseEntity.ok(UserResponse.builder()
-                .userId(user.getUserId())
-                .email(user.getEmail())
-                .name(user.getName())
-                .role(user.getRole().name())
+                .userId(user.userId())
+                .email(user.email())
+                .name(user.name())
+                .role(user.role())
                 .build());
     }
 
@@ -113,10 +113,10 @@ public class AuthController {
     @Operation(summary = "비밀번호 변경")
     @PostMapping("/password/change")
     public ResponseEntity<String> changePassword(
-            @AuthenticationPrincipal UserAuth user,
+            @AuthenticationPrincipal AuthenticatedUser user,
             @RequestBody PasswordChangeRequest request
     ) {
-        if (authService.changePassword(user, request)) {
+        if (authService.changePassword(user.userId(), request)) {
             return ResponseEntity.ok("비밀번호가 성공적으로 변경되었습니다.");
         }
         return ResponseEntity.badRequest().body("현재 비밀번호가 일치하지 않습니다.");
@@ -124,8 +124,8 @@ public class AuthController {
 
     @Operation(summary = "사용자 삭제")
     @DeleteMapping("/delete")
-    public ResponseEntity<Void> deleteUser(@AuthenticationPrincipal UserAuth user, HttpServletResponse response) {
-        authService.deleteUser(user.getUserId());
+    public ResponseEntity<Void> deleteUser(@AuthenticationPrincipal AuthenticatedUser user, HttpServletResponse response) {
+        authService.deleteUser(user.userId());
         clearTokenCookies(response);
         return ResponseEntity.noContent().build();
     }
@@ -133,21 +133,21 @@ public class AuthController {
     @Operation(summary = "회원 정보 수정")
     @PostMapping("/update")
     public ResponseEntity<String> updateUserInfo(
-            @AuthenticationPrincipal UserAuth user,
+            @AuthenticationPrincipal AuthenticatedUser user,
             @RequestBody UpdateUserRequest request
     ) {
-        authService.updateUserInfo(user, request);
+        authService.updateUserInfo(user.userId(), request);
         return ResponseEntity.ok("회원 정보가 성공적으로 수정되었습니다.");
     }
 
     @Operation(summary = "회원 탈퇴")
     @PostMapping("/withdraw")
     public ResponseEntity<String> withdraw(
-            @AuthenticationPrincipal UserAuth user,
+            @AuthenticationPrincipal AuthenticatedUser user,
             @RequestBody WithdrawRequest request,
             HttpServletResponse response
     ) {
-        if (!authService.withdraw(user, request)) {
+        if (!authService.withdraw(user.userId(), request)) {
             return ResponseEntity.badRequest().body("비밀번호가 일치하지 않습니다.");
         }
         clearTokenCookies(response);

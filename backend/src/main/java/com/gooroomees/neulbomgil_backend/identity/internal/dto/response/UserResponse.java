@@ -1,6 +1,5 @@
 package com.gooroomees.neulbomgil_backend.identity.internal.dto.response;
 
-import com.gooroomees.neulbomgil_backend.identity.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
