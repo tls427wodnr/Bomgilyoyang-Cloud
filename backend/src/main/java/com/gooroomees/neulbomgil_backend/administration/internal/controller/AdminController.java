@@ -1,7 +1,7 @@
-package com.gooroomees.neulbomgil_backend.domain.admin.controller;
+package com.gooroomees.neulbomgil_backend.administration.internal.controller;
 
-import com.gooroomees.neulbomgil_backend.domain.admin.dto.AdminUserResponseDto;
-import com.gooroomees.neulbomgil_backend.domain.admin.service.AdminService;
+import com.gooroomees.neulbomgil_backend.administration.internal.dto.AdminUserResponseDto;
+import com.gooroomees.neulbomgil_backend.administration.internal.service.AdminService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

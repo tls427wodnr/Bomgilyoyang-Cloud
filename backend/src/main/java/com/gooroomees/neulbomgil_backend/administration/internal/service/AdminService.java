@@ -1,6 +1,6 @@
-package com.gooroomees.neulbomgil_backend.domain.admin.service;
+package com.gooroomees.neulbomgil_backend.administration.internal.service;
 
-import com.gooroomees.neulbomgil_backend.domain.admin.dto.AdminUserResponseDto;
+import com.gooroomees.neulbomgil_backend.administration.internal.dto.AdminUserResponseDto;
 import com.gooroomees.neulbomgil_backend.community.CommunityActivityCount;
 import com.gooroomees.neulbomgil_backend.community.CommunityStatistics;
 import com.gooroomees.neulbomgil_backend.identity.UserAdministration;

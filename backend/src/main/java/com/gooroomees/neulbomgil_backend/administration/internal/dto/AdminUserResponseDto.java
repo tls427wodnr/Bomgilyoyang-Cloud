@@ -1,4 +1,4 @@
-package com.gooroomees.neulbomgil_backend.domain.admin.dto;
+package com.gooroomees.neulbomgil_backend.administration.internal.dto;
 
 public record AdminUserResponseDto(
         Long userId,
