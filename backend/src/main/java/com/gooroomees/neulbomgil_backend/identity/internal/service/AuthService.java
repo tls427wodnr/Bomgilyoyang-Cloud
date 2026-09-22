@@ -6,14 +6,14 @@ import com.gooroomees.neulbomgil_backend.identity.internal.dto.request.RegisterR
 import com.gooroomees.neulbomgil_backend.identity.internal.dto.request.UpdateUserRequest;
 import com.gooroomees.neulbomgil_backend.identity.internal.dto.request.WithdrawRequest;
 import com.gooroomees.neulbomgil_backend.identity.internal.dto.response.JwtTokenResponse;
-import com.gooroomees.neulbomgil_backend.identity.internal.entity.RefreshToken;
 import com.gooroomees.neulbomgil_backend.identity.internal.entity.Role;
 import com.gooroomees.neulbomgil_backend.identity.internal.entity.Status;
 import com.gooroomees.neulbomgil_backend.identity.internal.entity.UserAuth;
-import com.gooroomees.neulbomgil_backend.identity.internal.repository.RefreshTokenRepository;
+import com.gooroomees.neulbomgil_backend.identity.internal.repository.RefreshTokenRedisRepository;
 import com.gooroomees.neulbomgil_backend.identity.internal.repository.UserAuthRepository;
 import com.gooroomees.neulbomgil_backend.identity.internal.security.JwtProvider;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
@@ -21,16 +21,22 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.time.Duration;
+
 @Service
 @RequiredArgsConstructor
 public class AuthService {
-    private final RefreshTokenService refreshTokenService;
     private final UserAuthRepository userAuthRepository;
     private final AuthenticationManager authenticationManager;
     private final JwtProvider jwtProvider;
     private final PasswordEncoder passwordEncoder;
     private final UserAuthService userAuthService;
-    private final RefreshTokenRepository refreshTokenRepository;
+    private final RefreshTokenRedisRepository refreshTokenRedisRepository;
+
+    @Value("${application.security.jwt.refresh-token-expiration}")
+    private long refreshTokenExpiration;
 
     @Transactional
     public String register(RegisterRequest request) {
@@ -70,11 +76,11 @@ public class AuthService {
         String accessToken = jwtProvider.generateAccessToken(user);
         String refreshToken = jwtProvider.generateRefreshToken(user);
 
-        refreshTokenRepository.findByUserId(user.getUserId())
-                .ifPresentOrElse(
-                        token -> token.update(refreshToken),
-                        () -> refreshTokenRepository.save(new RefreshToken(user.getUserId(), refreshToken))
-                );
+        refreshTokenRedisRepository.save(
+                user.getUserId(),
+                refreshToken,
+                Duration.ofMillis(refreshTokenExpiration)
+        );
 
         return JwtTokenResponse.builder()
                 .accessToken(accessToken)
@@ -89,7 +95,9 @@ public class AuthService {
         }
 
         Long userId = jwtProvider.extractUserId(refreshToken);
-        refreshTokenRepository.findByUserId(userId).ifPresent(refreshTokenRepository::delete);
+        refreshTokenRedisRepository.findByUserId(userId)
+                .filter(savedToken -> tokensMatch(savedToken, refreshToken))
+                .ifPresent(savedToken -> refreshTokenRedisRepository.deleteByUserId(userId));
     }
 
     public String createNewAccessToken(String refreshToken) {
@@ -97,7 +105,14 @@ public class AuthService {
             throw new IllegalArgumentException("유효하지 않은 Refresh Token입니다.");
         }
 
-        Long userId = refreshTokenService.findByRefreshToken(refreshToken).getUserId();
+        Long userId = jwtProvider.extractUserId(refreshToken);
+        String savedToken = refreshTokenRedisRepository.findByUserId(userId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 Refresh 토큰입니다."));
+
+        if (!tokensMatch(savedToken, refreshToken)) {
+            throw new IllegalArgumentException("일치하지 않는 Refresh 토큰입니다.");
+        }
+
         UserAuth user = userAuthService.findById(userId);
         return jwtProvider.generateAccessToken(user);
     }
@@ -128,7 +143,7 @@ public class AuthService {
         UserAuth user = userAuthRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
         user.deleteUser();
-        refreshTokenRepository.findByUserId(userId).ifPresent(refreshTokenRepository::delete);
+        refreshTokenRedisRepository.deleteByUserId(userId);
     }
 
     @Transactional
@@ -148,7 +163,14 @@ public class AuthService {
         }
 
         savedUser.deleteUser();
-        refreshTokenRepository.findByUserId(savedUser.getUserId()).ifPresent(refreshTokenRepository::delete);
+        refreshTokenRedisRepository.deleteByUserId(savedUser.getUserId());
         return true;
+    }
+
+    private boolean tokensMatch(String savedToken, String presentedToken) {
+        return MessageDigest.isEqual(
+                savedToken.getBytes(StandardCharsets.UTF_8),
+                presentedToken.getBytes(StandardCharsets.UTF_8)
+        );
     }
 }

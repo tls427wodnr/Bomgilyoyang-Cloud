@@ -1,6 +1,5 @@
 package com.gooroomees.neulbomgil_backend.facility.internal.controller;
 
-import com.gooroomees.neulbomgil_backend.identity.internal.repository.RefreshTokenRepository;
 import com.gooroomees.neulbomgil_backend.facility.internal.controller.MapController;
 import com.gooroomees.neulbomgil_backend.facility.internal.dto.request.FacilitySearchRequest;
 import com.gooroomees.neulbomgil_backend.facility.internal.dto.request.MarkerRequest;
@@ -57,9 +56,6 @@ class MapControllerTest {
 
     @MockitoBean
     private UserDetailsService userDetailsService;
-
-    @MockitoBean
-    private RefreshTokenRepository refreshTokenRepository;
 
     @Test
     @DisplayName("지도 시설 마커 조회 - 성공")
