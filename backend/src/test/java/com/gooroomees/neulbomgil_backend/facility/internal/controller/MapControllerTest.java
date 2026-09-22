@@ -1,4 +1,4 @@
-package com.gooroomees.neulbomgil_backend.domain.map.controller;
+package com.gooroomees.neulbomgil_backend.facility.internal.controller;
 
 import com.gooroomees.neulbomgil_backend.domain.auth.repository.RefreshTokenRepository;
 import com.gooroomees.neulbomgil_backend.facility.internal.controller.MapController;
