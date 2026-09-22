@@ -10,7 +10,7 @@ import com.gooroomees.neulbomgil_backend.domain.favorite.dto.request.FavoriteDel
 import com.gooroomees.neulbomgil_backend.domain.favorite.dto.request.FavoriteRequest;
 import com.gooroomees.neulbomgil_backend.domain.favorite.dto.response.FavoriteResponse;
 import com.gooroomees.neulbomgil_backend.domain.favorite.service.FavoriteService;
-import com.gooroomees.neulbomgil_backend.facility.internal.entity.Facility;
+import com.gooroomees.neulbomgil_backend.facility.FacilitySummary;
 import com.gooroomees.neulbomgil_backend.global.config.JwtAuthenticationFilter;
 import com.gooroomees.neulbomgil_backend.global.config.JwtProvider;
 import com.gooroomees.neulbomgil_backend.global.config.SecurityConfig;
@@ -121,16 +121,20 @@ class FavoriteControllerTest {
     @DisplayName("내 즐겨찾기 시설 목록 조회 - 성공")
     void getFavorites_Success() throws Exception {
         // given
-        Facility mockFacility = Facility.builder()
-                .id("fac_01")
-                .facilityName("늘봄 요양원")
-                .facilityTel("031-123-4567")
-                .categoryName("노인요양시설")
-                .newAddress("경기도 안양시 동안구")
-                .facilityScore(5)
-                .capacityCnt(50)
-                .currentCnt(42)
-                .build();
+        FacilitySummary mockFacility = new FacilitySummary(
+                "fac_01",
+                "늘봄 요양원",
+                "031-123-4567",
+                "노인요양시설",
+                null,
+                "경기도 안양시 동안구",
+                null,
+                null,
+                5,
+                null,
+                50,
+                42
+        );
 
         FavoriteResponse response = FavoriteResponse.builder()
                 .id(1L)

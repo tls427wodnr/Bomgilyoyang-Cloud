@@ -5,15 +5,14 @@ import com.gooroomees.neulbomgil_backend.domain.favorite.dto.request.FavoriteReq
 import com.gooroomees.neulbomgil_backend.domain.favorite.dto.response.FavoriteResponse;
 import com.gooroomees.neulbomgil_backend.domain.favorite.entity.Favorite;
 import com.gooroomees.neulbomgil_backend.domain.favorite.repository.FavoriteRepository;
-import com.gooroomees.neulbomgil_backend.facility.internal.entity.Facility;
-import com.gooroomees.neulbomgil_backend.facility.internal.repository.FacilityRepository;
+import com.gooroomees.neulbomgil_backend.facility.FacilityLookup;
+import com.gooroomees.neulbomgil_backend.facility.FacilitySummary;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -21,7 +20,7 @@ import java.util.stream.Collectors;
 public class FavoriteService {
 
     private final FavoriteRepository favoriteRepository;
-    private final FacilityRepository facilityRepository;
+    private final FacilityLookup facilityLookup;
 
     @Transactional
     public Long saveFavorite(Long userId, FavoriteRequest request) {
@@ -44,8 +43,7 @@ public class FavoriteService {
                 .map(Favorite::getFacilityId)
                 .distinct()
                 .toList();
-        Map<String, Facility> facilityMap = facilityRepository.findAllById(facilityIds).stream()
-                .collect(Collectors.toMap(Facility::getId, f -> f));
+        Map<String, FacilitySummary> facilityMap = facilityLookup.findAllByIds(facilityIds);
 
         return favorites.stream()
                 .map(favorite -> FavoriteResponse.builder()
