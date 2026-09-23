@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gooroomees.neulbomgil_backend.chat.internal.mapper.ChatMapper">
+
+    <resultMap id="chatResultMap"
+               type="com.gooroomees.neulbomgil_backend.chat.internal.entity.Chat">
+        <id property="chatId" column="chat_id"/>
+        <result property="senderId" column="user_id"/>
+        <result property="message" column="message"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="readAt" column="read_at"/>
+        <association property="chatRoom"
+                     javaType="com.gooroomees.neulbomgil_backend.chat.internal.entity.ChatRoom">
+            <id property="roomId" column="room_id"/>
+        </association>
+    </resultMap>
+
+    <insert id="insert"
+            parameterType="com.gooroomees.neulbomgil_backend.chat.internal.entity.Chat"
+            useGeneratedKeys="true"
+            keyProperty="chatId"
+            keyColumn="chat_id">
+        INSERT INTO chat (
+            room_id,
+            user_id,
+            message,
+            created_at,
+            read_at
+        ) VALUES (
+            #{chatRoom.roomId},
+            #{senderId},
+            #{message},
+            #{createdAt},
+            #{readAt}
+        )
+    </insert>
+
+    <select id="findMessagesByRoomId" resultMap="chatResultMap">
+        SELECT
+            chat_id,
+            room_id,
+            user_id,
+            message,
+            created_at,
+            read_at
+        FROM chat
+        WHERE room_id = #{roomId}
+        ORDER BY created_at ASC, chat_id ASC
+    </select>
+
+    <update id="updateReadAt">
+        UPDATE chat
+        SET read_at = CURRENT_TIMESTAMP(6)
+        WHERE room_id = #{roomId}
+          AND user_id != #{senderId}
+          AND read_at IS NULL
+    </update>
+
+    <select id="existsUnreadChatByUserId" resultType="boolean">
+        SELECT CASE
+            WHEN COUNT(*) &gt; 0 THEN TRUE
+            ELSE FALSE
+        END
+        FROM chat c
+        INNER JOIN chat_room cr
+                ON cr.room_id = c.room_id
+        WHERE cr.user_id = #{userId}
+          AND c.user_id != #{userId}
+          AND c.read_at IS NULL
+    </select>
+
+</mapper>

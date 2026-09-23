@@ -1,32 +1,24 @@
 package com.gooroomees.neulbomgil_backend.chat.internal.entity;
 
-import jakarta.persistence.*;
-import lombok.*;
-
-
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "chat_room")
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class ChatRoom {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "room_id")
     private Long roomId;
 
-
-
-    @Column(name = "user_id", nullable = false)
     private Long userId;
 
-
-    @Column(name = "last_message_at")
     private LocalDateTime lastMessageAt;
 
     public void updateLastMessageAt() {
