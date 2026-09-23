@@ -1,21 +1,16 @@
 package com.gooroomees.neulbomgil_backend.facility.internal.entity;
 
-import jakarta.persistence.*;
 import lombok.*;
 
-@Entity
-@Table(name = "park")
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Setter
+@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class Park {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
     private String name; // 공원명
 
     private String category; // 공원구분

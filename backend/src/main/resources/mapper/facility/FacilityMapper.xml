@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gooroomees.neulbomgil_backend.facility.internal.mapper.FacilityMapper">
+
+    <resultMap id="facilityResultMap"
+               type="com.gooroomees.neulbomgil_backend.facility.internal.entity.Facility">
+        <id property="id" column="id"/>
+        <result property="facilityName" column="facility_name"/>
+        <result property="facilityTel" column="facility_tel"/>
+        <result property="categoryName" column="category_name"/>
+        <result property="oldAddress" column="old_address"/>
+        <result property="newAddress" column="new_address"/>
+        <result property="longitude" column="longitude"/>
+        <result property="latitude" column="latitude"/>
+        <result property="facilityScore" column="facility_score"/>
+        <result property="facilityImage" column="facility_image"/>
+        <result property="capacityCnt" column="capacity_cnt"/>
+        <result property="currentCnt" column="current_cnt"/>
+    </resultMap>
+
+    <resultMap id="facilityResponseResultMap"
+               type="com.gooroomees.neulbomgil_backend.facility.internal.dto.response.FacilityResponse">
+        <id property="id" column="id"/>
+        <result property="facilityName" column="facility_name"/>
+        <result property="facilityTel" column="facility_tel"/>
+        <result property="categoryName" column="category_name"/>
+        <result property="oldAddress" column="old_address"/>
+        <result property="newAddress" column="new_address"/>
+        <result property="longitude" column="longitude"/>
+        <result property="latitude" column="latitude"/>
+        <result property="facilityScore" column="facility_score"/>
+        <result property="facilityImage" column="facility_image"/>
+        <result property="capacityCnt" column="capacity_cnt"/>
+        <result property="currentCnt" column="current_cnt"/>
+        <result property="distance" column="distance"/>
+    </resultMap>
+
+    <sql id="facilityColumns">
+        id,
+        facility_name,
+        facility_tel,
+        category_name,
+        old_address,
+        new_address,
+        longitude,
+        latitude,
+        facility_score,
+        facility_image,
+        capacity_cnt,
+        current_cnt
+    </sql>
+
+    <insert id="upsert"
+            parameterType="com.gooroomees.neulbomgil_backend.facility.internal.entity.Facility">
+        INSERT INTO facility (
+            <include refid="facilityColumns"/>
+        ) VALUES (
+            #{id},
+            #{facilityName},
+            #{facilityTel},
+            #{categoryName},
+            #{oldAddress},
+            #{newAddress},
+            #{longitude},
+            #{latitude},
+            #{facilityScore},
+            #{facilityImage},
+            #{capacityCnt},
+            #{currentCnt}
+        )
+        ON DUPLICATE KEY UPDATE
+            facility_name = VALUES(facility_name),
+            facility_tel = VALUES(facility_tel),
+            category_name = VALUES(category_name),
+            old_address = VALUES(old_address),
+            new_address = VALUES(new_address),
+            longitude = VALUES(longitude),
+            latitude = VALUES(latitude),
+            facility_score = VALUES(facility_score),
+            facility_image = VALUES(facility_image),
+            capacity_cnt = VALUES(capacity_cnt),
+            current_cnt = VALUES(current_cnt)
+    </insert>
+
+    <select id="findById" resultMap="facilityResultMap">
+        SELECT
+            <include refid="facilityColumns"/>
+        FROM facility
+        WHERE id = #{id}
+    </select>
+
+    <select id="findAllByIds" resultMap="facilityResultMap">
+        SELECT
+            <include refid="facilityColumns"/>
+        FROM facility
+        <where>
+            <choose>
+                <when test="ids != null and !ids.isEmpty()">
+                    id IN
+                    <foreach collection="ids" item="id" open="(" separator="," close=")">
+                        #{id}
+                    </foreach>
+                </when>
+                <otherwise>
+                    1 = 0
+                </otherwise>
+            </choose>
+        </where>
+        ORDER BY id ASC
+    </select>
+
+    <select id="findFacilitiesWithinDistance" resultMap="facilityResultMap">
+        SELECT
+            <include refid="facilityColumns"/>
+        FROM (
+            SELECT
+                <include refid="facilityColumns"/>,
+                6371 * ACOS(
+                    COS(RADIANS(#{lat})) * COS(RADIANS(latitude))
+                    * COS(RADIANS(longitude) - RADIANS(#{lon}))
+                    + SIN(RADIANS(#{lat})) * SIN(RADIANS(latitude))
+                ) AS distance
+            FROM facility
+            WHERE latitude IS NOT NULL
+              AND longitude IS NOT NULL
+        ) nearby_facility
+        WHERE distance &lt;= #{radius}
+        ORDER BY distance ASC, id ASC
+    </select>
+
+    <select id="searchByRegionCursor" resultMap="facilityResponseResultMap">
+        SELECT
+            <include refid="facilityColumns"/>,
+            distance
+        FROM (
+            SELECT
+                <include refid="facilityColumns"/>,
+                6371 * ACOS(
+                    COS(RADIANS(#{request.userLat})) * COS(RADIANS(latitude))
+                    * COS(RADIANS(longitude) - RADIANS(#{request.userLon}))
+                    + SIN(RADIANS(#{request.userLat})) * SIN(RADIANS(latitude))
+                ) AS distance
+            FROM facility
+            WHERE latitude IS NOT NULL
+              AND longitude IS NOT NULL
+        ) searched_facility
+        <where>
+            <if test="request.keyword != null and !request.keyword.isBlank()">
+                AND (
+                    old_address LIKE CONCAT('%', #{request.keyword}, '%')
+                    OR new_address LIKE CONCAT('%', #{request.keyword}, '%')
+                )
+            </if>
+            <if test="request.lastId != null and request.lastValue != null">
+                <choose>
+                    <when test="request.sort == 'score'">
+                        AND (
+                            facility_score &lt; #{request.lastValue}
+                            OR (
+                                facility_score = #{request.lastValue}
+                                AND id &lt; #{request.lastId}
+                            )
+                        )
+                    </when>
+                    <otherwise>
+                        AND (
+                            distance &gt; #{request.lastValue}
+                            OR (
+                                distance = #{request.lastValue}
+                                AND id &gt; #{request.lastId}
+                            )
+                        )
+                    </otherwise>
+                </choose>
+            </if>
+        </where>
+        <choose>
+            <when test="request.sort == 'score'">
+                ORDER BY facility_score DESC, id DESC
+            </when>
+            <otherwise>
+                ORDER BY distance ASC, id ASC
+            </otherwise>
+        </choose>
+        LIMIT #{request.size}
+    </select>
+
+</mapper>
