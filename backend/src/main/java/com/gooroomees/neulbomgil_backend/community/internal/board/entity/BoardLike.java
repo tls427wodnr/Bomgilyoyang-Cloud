@@ -1,28 +1,22 @@
 package com.gooroomees.neulbomgil_backend.community.internal.board.entity;
 
-import jakarta.persistence.*;
-import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(
-        name = "board_like",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"board_id", "user_id"}) // 한 유저가 같은 글에 중복 좋아요 방지
-)
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class BoardLike {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "board_id")
     private Board board;
 
-    @Column(name = "user_id")
     private Long userId;
 
     public static BoardLike create(Board board, Long userId) {

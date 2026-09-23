@@ -2,8 +2,8 @@ package com.gooroomees.neulbomgil_backend.community.internal.service;
 
 import com.gooroomees.neulbomgil_backend.community.CommunityActivityCount;
 import com.gooroomees.neulbomgil_backend.community.CommunityStatistics;
-import com.gooroomees.neulbomgil_backend.community.internal.board.repository.BoardRepository;
-import com.gooroomees.neulbomgil_backend.community.internal.reply.repository.ReplyRepository;
+import com.gooroomees.neulbomgil_backend.community.internal.board.mapper.BoardMapper;
+import com.gooroomees.neulbomgil_backend.community.internal.reply.mapper.ReplyMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,14 +13,14 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 class CommunityStatisticsService implements CommunityStatistics {
 
-    private final BoardRepository boardRepository;
-    private final ReplyRepository replyRepository;
+    private final BoardMapper boardMapper;
+    private final ReplyMapper replyMapper;
 
     @Override
     public CommunityActivityCount countByUserId(Long userId) {
         return new CommunityActivityCount(
-                boardRepository.countByUserId(userId),
-                replyRepository.countByUserId(userId)
+                boardMapper.countByUserId(userId),
+                replyMapper.countByUserId(userId)
         );
     }
 }

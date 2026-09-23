@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gooroomees.neulbomgil_backend.community.internal.board.mapper.BoardMapper">
+
+    <resultMap id="boardResultMap"
+               type="com.gooroomees.neulbomgil_backend.community.internal.board.entity.Board">
+        <id property="boardid" column="boardid"/>
+        <result property="userId" column="user_id"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="cnt" column="cnt"/>
+        <result property="likeCnt" column="like_cnt"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="modifiedAt" column="modified_at"/>
+    </resultMap>
+
+    <sql id="boardColumns">
+        boardid,
+        user_id,
+        title,
+        content,
+        cnt,
+        like_cnt,
+        created_at,
+        modified_at
+    </sql>
+
+    <insert id="insert"
+            parameterType="com.gooroomees.neulbomgil_backend.community.internal.board.entity.Board"
+            useGeneratedKeys="true"
+            keyProperty="boardid"
+            keyColumn="boardid">
+        INSERT INTO board (
+            user_id,
+            title,
+            content,
+            cnt,
+            like_cnt,
+            created_at,
+            modified_at
+        ) VALUES (
+            #{userId},
+            #{title},
+            #{content},
+            #{cnt},
+            #{likeCnt},
+            CURRENT_TIMESTAMP(6),
+            CURRENT_TIMESTAMP(6)
+        )
+    </insert>
+
+    <select id="findById" resultMap="boardResultMap">
+        SELECT
+            <include refid="boardColumns"/>
+        FROM board
+        WHERE boardid = #{boardId}
+    </select>
+
+    <select id="findAllOrderByCreatedAt" resultMap="boardResultMap">
+        SELECT
+            <include refid="boardColumns"/>
+        FROM board
+        ORDER BY created_at DESC, boardid DESC
+        LIMIT #{size} OFFSET #{offset}
+    </select>
+
+    <select id="findAllOrderByViewCount" resultMap="boardResultMap">
+        SELECT
+            <include refid="boardColumns"/>
+        FROM board
+        ORDER BY cnt DESC, created_at DESC, boardid DESC
+        LIMIT #{size} OFFSET #{offset}
+    </select>
+
+    <select id="findAllOrderByReplyCount" resultMap="boardResultMap">
+        SELECT
+            b.boardid,
+            b.user_id,
+            b.title,
+            b.content,
+            b.cnt,
+            b.like_cnt,
+            b.created_at,
+            b.modified_at
+        FROM board b
+        LEFT JOIN reply r
+               ON r.board_id = b.boardid
+        GROUP BY
+            b.boardid,
+            b.user_id,
+            b.title,
+            b.content,
+            b.cnt,
+            b.like_cnt,
+            b.created_at,
+            b.modified_at
+        ORDER BY COUNT(r.reply_id) DESC, b.created_at DESC, b.boardid DESC
+        LIMIT #{size} OFFSET #{offset}
+    </select>
+
+    <select id="findByKeyword" resultMap="boardResultMap">
+        SELECT
+            <include refid="boardColumns"/>
+        FROM board
+        WHERE title LIKE CONCAT('%', #{keyword}, '%')
+           OR content LIKE CONCAT('%', #{keyword}, '%')
+        ORDER BY created_at DESC, boardid DESC
+        LIMIT #{size} OFFSET #{offset}
+    </select>
+
+    <select id="findByUserId" resultMap="boardResultMap">
+        SELECT
+            <include refid="boardColumns"/>
+        FROM board
+        WHERE user_id = #{userId}
+        ORDER BY created_at DESC, boardid DESC
+        LIMIT #{size} OFFSET #{offset}
+    </select>
+
+    <select id="countAll" resultType="long">
+        SELECT COUNT(*)
+        FROM board
+    </select>
+
+    <select id="countByKeyword" resultType="long">
+        SELECT COUNT(*)
+        FROM board
+        WHERE title LIKE CONCAT('%', #{keyword}, '%')
+           OR content LIKE CONCAT('%', #{keyword}, '%')
+    </select>
+
+    <select id="countByUserId" resultType="long">
+        SELECT COUNT(*)
+        FROM board
+        WHERE user_id = #{userId}
+    </select>
+
+    <update id="update">
+        UPDATE board
+        SET title = #{title},
+            content = #{content},
+            modified_at = CURRENT_TIMESTAMP(6)
+        WHERE boardid = #{boardid}
+    </update>
+
+    <update id="incrementViewCount">
+        UPDATE board
+        SET cnt = cnt + 1
+        WHERE boardid = #{boardId}
+    </update>
+
+    <update id="updateLikeCount">
+        UPDATE board
+        SET like_cnt = #{likeCount}
+        WHERE boardid = #{boardId}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM board
+        WHERE boardid = #{boardId}
+    </delete>
+
+</mapper>

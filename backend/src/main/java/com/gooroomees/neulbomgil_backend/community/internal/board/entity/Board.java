@@ -1,21 +1,22 @@
 package com.gooroomees.neulbomgil_backend.community.internal.board.entity;
-import jakarta.persistence.*;
-import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.time.LocalDateTime;
 
-@Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@EntityListeners(AuditingEntityListener.class)
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Board {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private Long boardid;
 
-    @Column(name = "user_id")
     private Long userId;
 
     private String title;
@@ -23,11 +24,8 @@ public class Board {
     private int cnt;       // 조회수
     private int likeCnt;   // 좋아요 수 (추가)
 
-    @CreatedDate
-    @Column(updatable = false)
     private LocalDateTime createdAt;
 
-    @LastModifiedDate
     private LocalDateTime modifiedAt;
 
     public static Board create(Long userId, String title, String content) {
