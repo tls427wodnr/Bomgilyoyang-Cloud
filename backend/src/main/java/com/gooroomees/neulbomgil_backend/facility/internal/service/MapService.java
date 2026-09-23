@@ -9,8 +9,8 @@ import com.gooroomees.neulbomgil_backend.facility.internal.dto.response.Facility
 import com.gooroomees.neulbomgil_backend.facility.internal.dto.response.NearParkResponse;
 import com.gooroomees.neulbomgil_backend.facility.internal.entity.Facility;
 import com.gooroomees.neulbomgil_backend.facility.internal.entity.Park;
-import com.gooroomees.neulbomgil_backend.facility.internal.repository.FacilityRepository;
-import com.gooroomees.neulbomgil_backend.facility.internal.repository.ParkRepository;
+import com.gooroomees.neulbomgil_backend.facility.internal.mapper.FacilityMapper;
+import com.gooroomees.neulbomgil_backend.facility.internal.mapper.ParkMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,11 +23,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class MapService {
 
-    private final FacilityRepository facilityRepository;
-    private final ParkRepository parkRepository;
+    private final FacilityMapper facilityMapper;
+    private final ParkMapper parkMapper;
 
     public List<FacilityMarkerResponse> getFacilityMarkers(MarkerRequest request) {
-        return facilityRepository.findFacilitiesWithinDistance(
+        return facilityMapper.findFacilitiesWithinDistance(
                         request.getLat(),
                         request.getLon(),
                         request.getRadius()
@@ -39,21 +39,21 @@ public class MapService {
 
     @Transactional(readOnly = true)
     public List<FacilityResponse> getFacilities(FacilitySearchRequest request) {
-        return facilityRepository.searchByRegionCursor(request);
+        return facilityMapper.searchByRegionCursor(request);
     }
 
     public FacilityDetailResponse getFacilityDetail(String facilityId) {
-        Facility facility = facilityRepository.findById(facilityId)
+        Facility facility = facilityMapper.findById(facilityId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 시설이 존재하지 않습니다. ID: " + facilityId));
 
         return FacilityDetailResponse.from(facility);
     }
 
     public List<NearParkResponse> getNearbyParks(NearbyParkRequest request) {
-        Facility facility = facilityRepository.findById(request.getFacilityId())
+        Facility facility = facilityMapper.findById(request.getFacilityId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 시설이 없습니다."));
 
-        List<Park> parks = parkRepository.findNearbyParks(
+        List<Park> parks = parkMapper.findNearbyParks(
                 facility.getLatitude(),
                 facility.getLongitude(),
                 request.getRadius()

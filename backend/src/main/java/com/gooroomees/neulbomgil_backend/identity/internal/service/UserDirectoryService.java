@@ -1,7 +1,7 @@
 package com.gooroomees.neulbomgil_backend.identity.internal.service;
 
 import com.gooroomees.neulbomgil_backend.identity.internal.entity.UserAuth;
-import com.gooroomees.neulbomgil_backend.identity.internal.repository.UserAuthRepository;
+import com.gooroomees.neulbomgil_backend.identity.internal.mapper.UserAuthMapper;
 import com.gooroomees.neulbomgil_backend.identity.UserDirectory;
 import com.gooroomees.neulbomgil_backend.identity.UserSummary;
 import lombok.RequiredArgsConstructor;
@@ -15,17 +15,17 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 class UserDirectoryService implements UserDirectory {
 
-    private final UserAuthRepository userAuthRepository;
+    private final UserAuthMapper userAuthMapper;
 
     @Override
     public Optional<UserSummary> findById(Long userId) {
-        return userAuthRepository.findById(userId)
+        return userAuthMapper.findById(userId)
                 .map(this::toSummary);
     }
 
     @Override
     public Optional<UserSummary> findByEmail(String email) {
-        return userAuthRepository.findByEmail(email)
+        return userAuthMapper.findByEmail(email)
                 .map(this::toSummary);
     }
 

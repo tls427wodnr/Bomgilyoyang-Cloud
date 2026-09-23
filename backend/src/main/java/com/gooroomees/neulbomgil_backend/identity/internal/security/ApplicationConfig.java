@@ -1,6 +1,6 @@
 package com.gooroomees.neulbomgil_backend.identity.internal.security;
 
-import com.gooroomees.neulbomgil_backend.identity.internal.repository.UserAuthRepository;
+import com.gooroomees.neulbomgil_backend.identity.internal.mapper.UserAuthMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,11 +17,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @RequiredArgsConstructor
 public class ApplicationConfig {
 
-    private final UserAuthRepository userRepository;
+    private final UserAuthMapper userAuthMapper;
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return username -> userRepository.findByEmail(username)
+        return username -> userAuthMapper.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 

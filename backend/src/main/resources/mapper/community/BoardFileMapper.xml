@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gooroomees.neulbomgil_backend.community.internal.board.mapper.BoardFileMapper">
+
+    <resultMap id="boardFileResultMap"
+               type="com.gooroomees.neulbomgil_backend.community.internal.board.entity.BoardFile">
+        <id property="fileid" column="fileid"/>
+        <result property="originName" column="origin_name"/>
+        <result property="savedName" column="saved_name"/>
+        <result property="filePath" column="file_path"/>
+        <result property="fileSize" column="file_size"/>
+        <association property="board"
+                     javaType="com.gooroomees.neulbomgil_backend.community.internal.board.entity.Board">
+            <id property="boardid" column="board_id"/>
+            <result property="userId" column="board_user_id"/>
+            <result property="title" column="board_title"/>
+            <result property="content" column="board_content"/>
+            <result property="cnt" column="board_cnt"/>
+            <result property="likeCnt" column="board_like_cnt"/>
+            <result property="createdAt" column="board_created_at"/>
+            <result property="modifiedAt" column="board_modified_at"/>
+        </association>
+    </resultMap>
+
+    <sql id="boardFileSelectColumns">
+        bf.fileid,
+        bf.board_id,
+        bf.origin_name,
+        bf.saved_name,
+        bf.file_path,
+        bf.file_size,
+        b.user_id AS board_user_id,
+        b.title AS board_title,
+        b.content AS board_content,
+        b.cnt AS board_cnt,
+        b.like_cnt AS board_like_cnt,
+        b.created_at AS board_created_at,
+        b.modified_at AS board_modified_at
+    </sql>
+
+    <insert id="insert"
+            parameterType="com.gooroomees.neulbomgil_backend.community.internal.board.entity.BoardFile"
+            useGeneratedKeys="true"
+            keyProperty="fileid"
+            keyColumn="fileid">
+        INSERT INTO board_file (
+            board_id,
+            origin_name,
+            saved_name,
+            file_path,
+            file_size
+        ) VALUES (
+            #{board.boardid},
+            #{originName},
+            #{savedName},
+            #{filePath},
+            #{fileSize}
+        )
+    </insert>
+
+    <select id="findById" resultMap="boardFileResultMap">
+        SELECT
+            <include refid="boardFileSelectColumns"/>
+        FROM board_file bf
+        INNER JOIN board b
+                ON b.boardid = bf.board_id
+        WHERE bf.fileid = #{fileId}
+    </select>
+
+    <select id="findByBoardId" resultMap="boardFileResultMap">
+        SELECT
+            <include refid="boardFileSelectColumns"/>
+        FROM board_file bf
+        INNER JOIN board b
+                ON b.boardid = bf.board_id
+        WHERE bf.board_id = #{boardId}
+        ORDER BY bf.fileid ASC
+    </select>
+
+    <delete id="deleteById">
+        DELETE FROM board_file
+        WHERE fileid = #{fileId}
+    </delete>
+
+    <delete id="deleteByBoardId">
+        DELETE FROM board_file
+        WHERE board_id = #{boardId}
+    </delete>
+
+</mapper>

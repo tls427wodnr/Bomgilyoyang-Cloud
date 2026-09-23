@@ -2,13 +2,13 @@ package com.gooroomees.neulbomgil_backend.facility.internal.service;
 
 import com.gooroomees.neulbomgil_backend.facility.internal.dto.response.ParkResponse;
 import com.gooroomees.neulbomgil_backend.facility.internal.entity.Park;
-import com.gooroomees.neulbomgil_backend.facility.internal.repository.ParkRepository;
-import jakarta.transaction.Transactional;
+import com.gooroomees.neulbomgil_backend.facility.internal.mapper.ParkMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 
@@ -22,7 +22,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ParkDataInitService {
 
-    private final ParkRepository parkRepository;
+    private final ParkMapper parkMapper;
     private final ResourceLoader resourceLoader;
     private final JdbcTemplate jdbcTemplate;
 
@@ -30,7 +30,7 @@ public class ParkDataInitService {
     public void initParkData() {
         log.info("공원 데이터 초기화 시작...");
         // 1. 기존 데이터 삭제
-        parkRepository.deleteAllInBatch();
+        parkMapper.deleteAll();
 
         try (InputStream is = resourceLoader.getResource("classpath:data/parks.json").getInputStream()) {
             ObjectMapper mapper = new ObjectMapper();

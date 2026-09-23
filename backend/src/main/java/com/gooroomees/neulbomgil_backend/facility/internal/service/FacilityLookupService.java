@@ -3,7 +3,7 @@ package com.gooroomees.neulbomgil_backend.facility.internal.service;
 import com.gooroomees.neulbomgil_backend.facility.FacilityLookup;
 import com.gooroomees.neulbomgil_backend.facility.FacilitySummary;
 import com.gooroomees.neulbomgil_backend.facility.internal.entity.Facility;
-import com.gooroomees.neulbomgil_backend.facility.internal.repository.FacilityRepository;
+import com.gooroomees.neulbomgil_backend.facility.internal.mapper.FacilityMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,17 +19,17 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 class FacilityLookupService implements FacilityLookup {
 
-    private final FacilityRepository facilityRepository;
+    private final FacilityMapper facilityMapper;
 
     @Override
     public Optional<FacilitySummary> findById(String facilityId) {
-        return facilityRepository.findById(facilityId)
+        return facilityMapper.findById(facilityId)
                 .map(this::toSummary);
     }
 
     @Override
     public Map<String, FacilitySummary> findAllByIds(Collection<String> facilityIds) {
-        return facilityRepository.findAllById(facilityIds).stream()
+        return facilityMapper.findAllByIds(facilityIds).stream()
                 .map(this::toSummary)
                 .collect(Collectors.toMap(
                         FacilitySummary::id,

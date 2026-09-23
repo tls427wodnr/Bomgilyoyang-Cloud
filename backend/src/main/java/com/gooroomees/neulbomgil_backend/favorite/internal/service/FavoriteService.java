@@ -4,7 +4,7 @@ import com.gooroomees.neulbomgil_backend.favorite.internal.dto.request.FavoriteD
 import com.gooroomees.neulbomgil_backend.favorite.internal.dto.request.FavoriteRequest;
 import com.gooroomees.neulbomgil_backend.favorite.internal.dto.response.FavoriteResponse;
 import com.gooroomees.neulbomgil_backend.favorite.internal.entity.Favorite;
-import com.gooroomees.neulbomgil_backend.favorite.internal.repository.FavoriteRepository;
+import com.gooroomees.neulbomgil_backend.favorite.internal.mapper.FavoriteMapper;
 import com.gooroomees.neulbomgil_backend.facility.FacilityLookup;
 import com.gooroomees.neulbomgil_backend.facility.FacilitySummary;
 import lombok.RequiredArgsConstructor;
@@ -19,12 +19,12 @@ import java.util.Map;
 @Transactional(readOnly = true)
 public class FavoriteService {
 
-    private final FavoriteRepository favoriteRepository;
+    private final FavoriteMapper favoriteMapper;
     private final FacilityLookup facilityLookup;
 
     @Transactional
     public Long saveFavorite(Long userId, FavoriteRequest request) {
-        favoriteRepository.findByUserIdAndFacilityId(userId, request.getFacilityId())
+        favoriteMapper.findByUserIdAndFacilityId(userId, request.getFacilityId())
                 .ifPresent(f -> {
                     throw new IllegalStateException("이미 즐겨찾기한 시설입니다.");
                 });
@@ -34,11 +34,16 @@ public class FavoriteService {
                 .facilityId(request.getFacilityId())
                 .build();
 
-        return favoriteRepository.save(favorite).getId();
+        int insertedCount = favoriteMapper.insert(favorite);
+        if (insertedCount != 1 || favorite.getId() == null) {
+            throw new IllegalStateException("즐겨찾기 저장에 실패했습니다.");
+        }
+
+        return favorite.getId();
     }
 
     public List<FavoriteResponse> getUserFavoritesWithDetail(Long userId) {
-        List<Favorite> favorites = favoriteRepository.findAllByUserId(userId);
+        List<Favorite> favorites = favoriteMapper.findAllByUserId(userId);
         List<String> facilityIds = favorites.stream()
                 .map(Favorite::getFacilityId)
                 .distinct()
@@ -57,6 +62,6 @@ public class FavoriteService {
 
     @Transactional
     public void deleteFavorite(Long userId, FavoriteDeleteRequest request) {
-        favoriteRepository.deleteByUserIdAndFacilityId(userId, request.getFacilityId());
+        favoriteMapper.deleteByUserIdAndFacilityId(userId, request.getFacilityId());
     }
 }

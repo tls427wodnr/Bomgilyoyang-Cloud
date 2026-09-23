@@ -1,22 +1,20 @@
 package com.gooroomees.neulbomgil_backend.community.internal.board.entity;
 
-import jakarta.persistence.*;
-import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "board_file")
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class BoardFile {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long fileid;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "board_id")
     private Board board;
 
     private String originName;   // 원본 파일명

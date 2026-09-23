@@ -2,8 +2,8 @@ package com.gooroomees.neulbomgil_backend.facility.internal.service;
 
 import com.gooroomees.neulbomgil_backend.facility.internal.dto.response.VWorldResponse;
 import com.gooroomees.neulbomgil_backend.facility.internal.entity.Facility;
-import com.gooroomees.neulbomgil_backend.facility.internal.repository.FacilityRepository;
-import com.gooroomees.neulbomgil_backend.facility.internal.repository.ParkRepository;
+import com.gooroomees.neulbomgil_backend.facility.internal.mapper.FacilityMapper;
+import com.gooroomees.neulbomgil_backend.facility.internal.mapper.ParkMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,8 +24,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class FacilityDataInitService {
 
-    private final FacilityRepository facilityRepository;
-    private final ParkRepository parkRepository;
+    private final FacilityMapper facilityMapper;
+    private final ParkMapper parkMapper;
     private final RestTemplate restTemplate;
 
     @Value("${vworld.api.key}")
@@ -87,14 +87,14 @@ public class FacilityDataInitService {
     public void savePageData(List<VWorldResponse.Feature> features) {
         List<String> ids = features.stream().map(VWorldResponse.Feature::getId).toList();
 
-        Map<String, Facility> existingMap = facilityRepository.findAllById(ids).stream()
+        Map<String, Facility> existingMap = facilityMapper.findAllByIds(ids).stream()
                 .collect(Collectors.toMap(Facility::getId, f -> f));
 
         List<Facility> facilitiesToSave = features.stream()
                 .map(feature -> mapToEntity(feature, Optional.ofNullable(existingMap.get(feature.getId()))))
                 .toList();
 
-        facilityRepository.saveAll(facilitiesToSave);
+        facilitiesToSave.forEach(facilityMapper::upsert);
     }
 
     private Facility mapToEntity(VWorldResponse.Feature feature, Optional<Facility> existing) {
@@ -148,7 +148,7 @@ public class FacilityDataInitService {
     }
 
     private Integer calculateFacilityScore(double lat, double lon) {
-        Map<String, Object> stats = parkRepository.getParkStatsWithinRadius(lat, lon);
+        Map<String, Object> stats = parkMapper.getParkStatsWithinRadius(lat, lon);
         long count = ((Number) stats.getOrDefault("count", 0)).longValue();
         if (count == 0) {
             return 0;

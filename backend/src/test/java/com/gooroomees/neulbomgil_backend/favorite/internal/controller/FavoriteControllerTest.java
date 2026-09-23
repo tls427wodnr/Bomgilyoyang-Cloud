@@ -2,7 +2,7 @@ package com.gooroomees.neulbomgil_backend.favorite.internal.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gooroomees.neulbomgil_backend.identity.AuthenticatedUser;
-import com.gooroomees.neulbomgil_backend.identity.internal.repository.UserAuthRepository;
+import com.gooroomees.neulbomgil_backend.identity.internal.mapper.UserAuthMapper;
 import com.gooroomees.neulbomgil_backend.favorite.internal.dto.request.FavoriteDeleteRequest;
 import com.gooroomees.neulbomgil_backend.favorite.internal.dto.request.FavoriteRequest;
 import com.gooroomees.neulbomgil_backend.favorite.internal.dto.response.FavoriteResponse;
@@ -98,7 +98,7 @@ class FavoriteControllerTest {
     private UserDetailsService userDetailsService;
 
     @MockitoBean
-    private UserAuthRepository userAuthRepository;
+    private UserAuthMapper userAuthMapper;
 
     private AuthenticatedUser authenticatedUser() {
         return new AuthenticatedUser(100L, "user@example.com", "테스트 사용자", "USER");

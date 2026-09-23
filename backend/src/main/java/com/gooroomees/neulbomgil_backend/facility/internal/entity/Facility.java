@@ -1,10 +1,7 @@
 package com.gooroomees.neulbomgil_backend.facility.internal.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
 import lombok.*;
 
-@Entity
 @Getter
 @Setter
 @NoArgsConstructor
@@ -12,7 +9,6 @@ import lombok.*;
 @Builder
 public class Facility {
 
-    @Id
     private String id;
 
     private String facilityName;      // 시설 이름
