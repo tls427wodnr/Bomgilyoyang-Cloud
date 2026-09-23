@@ -3,12 +3,12 @@ package com.gooroomees.neulbomgil_backend.facility.internal.service;
 import com.gooroomees.neulbomgil_backend.facility.internal.dto.response.ParkResponse;
 import com.gooroomees.neulbomgil_backend.facility.internal.entity.Park;
 import com.gooroomees.neulbomgil_backend.facility.internal.mapper.ParkMapper;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 
