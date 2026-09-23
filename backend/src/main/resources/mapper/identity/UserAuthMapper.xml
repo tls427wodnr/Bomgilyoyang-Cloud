@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gooroomees.neulbomgil_backend.identity.internal.mapper.UserAuthMapper">
+
+    <resultMap id="userAuthResultMap"
+               type="com.gooroomees.neulbomgil_backend.identity.internal.entity.UserAuth">
+        <id property="userId" column="user_id"/>
+        <result property="email" column="email"/>
+        <result property="password" column="password"/>
+        <result property="name" column="name"/>
+        <result property="role"
+                column="role"
+                javaType="com.gooroomees.neulbomgil_backend.identity.internal.entity.Role"
+                typeHandler="org.apache.ibatis.type.EnumOrdinalTypeHandler"/>
+        <result property="status"
+                column="status"
+                javaType="com.gooroomees.neulbomgil_backend.identity.internal.entity.Status"
+                typeHandler="org.apache.ibatis.type.EnumOrdinalTypeHandler"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="modifiedAt" column="modified_at"/>
+    </resultMap>
+
+    <sql id="userAuthColumns">
+        user_id,
+        email,
+        password,
+        name,
+        role,
+        status,
+        created_at,
+        modified_at
+    </sql>
+
+    <insert id="insert"
+            parameterType="com.gooroomees.neulbomgil_backend.identity.internal.entity.UserAuth"
+            useGeneratedKeys="true"
+            keyProperty="userId"
+            keyColumn="user_id">
+        INSERT INTO `user` (
+            email,
+            password,
+            name,
+            role,
+            status,
+            created_at,
+            modified_at
+        ) VALUES (
+            #{email},
+            #{password},
+            #{name},
+            #{role,
+              javaType=com.gooroomees.neulbomgil_backend.identity.internal.entity.Role,
+              typeHandler=org.apache.ibatis.type.EnumOrdinalTypeHandler},
+            #{status,
+              javaType=com.gooroomees.neulbomgil_backend.identity.internal.entity.Status,
+              typeHandler=org.apache.ibatis.type.EnumOrdinalTypeHandler},
+            CURRENT_TIMESTAMP(6),
+            #{modifiedAt}
+        )
+    </insert>
+
+    <select id="findById" resultMap="userAuthResultMap">
+        SELECT
+            <include refid="userAuthColumns"/>
+        FROM `user`
+        WHERE user_id = #{userId}
+    </select>
+
+    <select id="findByEmail" resultMap="userAuthResultMap">
+        SELECT
+            <include refid="userAuthColumns"/>
+        FROM `user`
+        WHERE email = #{email}
+    </select>
+
+    <select id="existsByEmail" resultType="boolean">
+        SELECT CASE
+            WHEN COUNT(*) > 0 THEN TRUE
+            ELSE FALSE
+        END
+        FROM `user`
+        WHERE email = #{email}
+    </select>
+
+    <select id="findByStatus" resultMap="userAuthResultMap">
+        SELECT
+            <include refid="userAuthColumns"/>
+        FROM `user`
+        WHERE status = #{status,
+                          javaType=com.gooroomees.neulbomgil_backend.identity.internal.entity.Status,
+                          typeHandler=org.apache.ibatis.type.EnumOrdinalTypeHandler}
+        ORDER BY user_id ASC
+    </select>
+
+    <select id="findByRole" resultMap="userAuthResultMap">
+        SELECT
+            <include refid="userAuthColumns"/>
+        FROM `user`
+        WHERE role = #{role,
+                        javaType=com.gooroomees.neulbomgil_backend.identity.internal.entity.Role,
+                        typeHandler=org.apache.ibatis.type.EnumOrdinalTypeHandler}
+        ORDER BY user_id ASC
+    </select>
+
+    <update id="updateName">
+        UPDATE `user`
+        SET name = #{user.name},
+            modified_at = #{user.modifiedAt}
+        WHERE user_id = #{user.userId}
+    </update>
+
+    <update id="updatePassword">
+        UPDATE `user`
+        SET password = #{user.password}
+        WHERE user_id = #{user.userId}
+    </update>
+
+    <update id="updateStatus">
+        UPDATE `user`
+        SET status = #{user.status,
+                       javaType=com.gooroomees.neulbomgil_backend.identity.internal.entity.Status,
+                       typeHandler=org.apache.ibatis.type.EnumOrdinalTypeHandler}
+        WHERE user_id = #{user.userId}
+    </update>
+
+</mapper>

@@ -5,8 +5,8 @@ import com.gooroomees.neulbomgil_backend.identity.internal.dto.response.JwtToken
 import com.gooroomees.neulbomgil_backend.identity.internal.entity.Role;
 import com.gooroomees.neulbomgil_backend.identity.internal.entity.Status;
 import com.gooroomees.neulbomgil_backend.identity.internal.entity.UserAuth;
+import com.gooroomees.neulbomgil_backend.identity.internal.mapper.UserAuthMapper;
 import com.gooroomees.neulbomgil_backend.identity.internal.repository.RefreshTokenRedisRepository;
-import com.gooroomees.neulbomgil_backend.identity.internal.repository.UserAuthRepository;
 import com.gooroomees.neulbomgil_backend.identity.internal.security.JwtProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,7 +34,7 @@ class AuthServiceTest {
     private static final long REFRESH_TOKEN_EXPIRATION = 604_800_000L;
 
     @Mock
-    private UserAuthRepository userAuthRepository;
+    private UserAuthMapper userAuthMapper;
 
     @Mock
     private AuthenticationManager authenticationManager;
@@ -63,7 +63,7 @@ class AuthServiceTest {
     void loginStoresRefreshTokenInRedisWithTtl() {
         LoginRequest request = new LoginRequest("user@example.com", "password");
         UserAuth user = activeUser();
-        given(userAuthRepository.findByEmail(request.getEmail())).willReturn(Optional.of(user));
+        given(userAuthMapper.findByEmail(request.getEmail())).willReturn(Optional.of(user));
         given(jwtProvider.generateAccessToken(user)).willReturn("access-token");
         given(jwtProvider.generateRefreshToken(user)).willReturn("refresh-token");
 
