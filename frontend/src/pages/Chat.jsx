@@ -4,8 +4,7 @@ import { useParams, useSearchParams } from "react-router-dom";
 import {
     connectChatSocket,
     subscribeChatRoom,
-    sendChatMessage,
-    disconnectChatSocket
+    sendChatMessage
 } from '../services/chat/chatSocketService.js';
 
 import {
@@ -137,25 +136,32 @@ function Chat() {
      * 최초 로딩 + WebSocket 연결
      */
     useEffect(() => {
-    if (!userId) {
-        return;
-    }
+        if (!userId) {
+            return;
+        }
 
-    loadMessages();
+        loadMessages();
 
-    connectChatSocket(() => {
-        subscribeChatRoom(roomId, (message) => {
-            setMessages((prevMessages) => [
-                ...prevMessages,
-                message
-            ]);
+        let subscription = null;
+
+        const disconnect = connectChatSocket((client) => {
+            subscription = subscribeChatRoom(roomId, (message) => {
+                setMessages((prevMessages) => {
+                    const isDuplicate = message.chatId != null
+                        && prevMessages.some(({ chatId }) => chatId === message.chatId);
+
+                    return isDuplicate
+                        ? prevMessages
+                        : [...prevMessages, message];
+                });
+            }, client);
         });
-    });
 
-    return () => {
-        disconnectChatSocket();
-    };
-}, [roomId, userId]);
+        return () => {
+            subscription?.unsubscribe();
+            disconnect();
+        };
+    }, [roomId, userId]);
 
     /**
      * 메시지 추가될 때 스크롤 아래로 이동

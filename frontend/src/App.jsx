@@ -14,7 +14,7 @@ import BoardWrite from "./pages/BoardWrite.jsx";
 import MyPage from "./pages/MyPage.jsx";
 import Admin from "./pages/Admin.jsx";
 import Chat from "./pages/Chat.jsx";
-import Login from "./pages/login.jsx";
+import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
 import MyPageChange from "./pages/MyPageChange.jsx";
 import CareGrade from "./pages/CareGrade.jsx";

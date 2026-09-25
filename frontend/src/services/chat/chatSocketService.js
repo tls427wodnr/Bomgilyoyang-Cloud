@@ -8,28 +8,51 @@ let stompClient = null;
  */
 export const connectChatSocket = (onConnect) => {
     const socket = new SockJS(`${import.meta.env.VITE_API_BASE_URL}/ws/chat`);
+    const client = Stomp.over(socket);
+    let active = true;
 
-    stompClient = Stomp.over(socket);
+    stompClient = client;
 
-    stompClient.connect({}, () => {
+    client.connect({}, () => {
+        if (!active) {
+            client.disconnect();
+            return;
+        }
+
         console.log('WebSocket 연결 완료');
 
         if (onConnect) {
-            onConnect();
+            onConnect(client);
         }
     });
+
+    return () => {
+        active = false;
+
+        if (client.connected) {
+            client.disconnect(() => {
+                console.log('WebSocket 연결 종료');
+            });
+        } else {
+            socket.close();
+        }
+
+        if (stompClient === client) {
+            stompClient = null;
+        }
+    };
 };
 
 /**
  * 특정 채팅방 구독
  */
-export const subscribeChatRoom = (roomId, onMessage) => {
-    if (!stompClient || !stompClient.connected) {
+export const subscribeChatRoom = (roomId, onMessage, client = stompClient) => {
+    if (!client || !client.connected) {
         console.error('WebSocket이 연결되지 않았습니다.');
         return null;
     }
 
-    return stompClient.subscribe(`/sub/chatrooms/${roomId}`, (message) => {
+    return client.subscribe(`/sub/chatrooms/${roomId}`, (message) => {
         const response = JSON.parse(message.body);
         onMessage(response);
     });
@@ -51,17 +74,4 @@ export const sendChatMessage = (roomId, userId, message) => {
             message: message
         })
     );
-};
-
-/**
- * WebSocket 연결 해제
- */
-export const disconnectChatSocket = () => {
-    if (stompClient && stompClient.connected) {
-        stompClient.disconnect(() => {
-            console.log('WebSocket 연결 종료');
-        });
-    }
-
-    stompClient = null;
 };
