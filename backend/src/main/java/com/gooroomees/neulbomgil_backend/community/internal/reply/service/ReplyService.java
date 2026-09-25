@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Transactional(transactionManager = "communityTransactionManager", readOnly = true)
 public class ReplyService {
     private final ReplyMapper replyMapper;
     private final BoardMapper boardMapper;
@@ -58,7 +58,7 @@ public class ReplyService {
     }
 
     //댓글 작성
-    @Transactional
+    @Transactional(transactionManager = "communityTransactionManager")
     public void createReply(Long boardId, ReplyRequestDTO dto, Long userId) {
         Board board = findBoard(boardId);
         Reply reply = Reply.create(board, userId, dto.getContent());
@@ -66,7 +66,7 @@ public class ReplyService {
     }
 
     //댓글 수정
-    @Transactional
+    @Transactional(transactionManager = "communityTransactionManager")
     public void updateReply(Long boardId, Long replyId, ReplyRequestDTO dto, Long userId) {
         findBoard(boardId);
         Reply reply = findReply(replyId);//댓글 있는지 확인
@@ -75,7 +75,7 @@ public class ReplyService {
         replyMapper.update(reply);
     }
     //댓글 삭제
-    @Transactional
+    @Transactional(transactionManager = "communityTransactionManager")
     public void deleteReply(Long boardId, Long replyId, Long userId){
         findBoard(boardId);
         Reply reply = findReply(replyId);//댓글 있는지 확인

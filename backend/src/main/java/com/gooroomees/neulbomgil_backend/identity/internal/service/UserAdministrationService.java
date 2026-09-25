@@ -14,7 +14,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Transactional(transactionManager = "identityTransactionManager", readOnly = true)
 class UserAdministrationService implements UserAdministration {
 
     private final UserAuthMapper userAuthMapper;
@@ -34,7 +34,7 @@ class UserAdministrationService implements UserAdministration {
     }
 
     @Override
-    @Transactional
+    @Transactional(transactionManager = "identityTransactionManager")
     public void toggleStatus(Long userId) {
         UserAuth user = userAuthMapper.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("사용자가 없습니다."));

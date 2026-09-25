@@ -7,14 +7,12 @@ import com.gooroomees.neulbomgil_backend.identity.UserAdministration;
 import com.gooroomees.neulbomgil_backend.identity.UserSummary;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class AdminService {
 
     private final UserAdministration userAdministration;
@@ -67,7 +65,6 @@ public class AdminService {
 
         return adminUserResponseDtoList;
     }
-    @Transactional
     public void updateUserStatus(Long userId) {
         userAdministration.toggleStatus(userId);
     }

@@ -16,13 +16,13 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Transactional(transactionManager = "favoriteTransactionManager", readOnly = true)
 public class FavoriteService {
 
     private final FavoriteMapper favoriteMapper;
     private final FacilityLookup facilityLookup;
 
-    @Transactional
+    @Transactional(transactionManager = "favoriteTransactionManager")
     public Long saveFavorite(Long userId, FavoriteRequest request) {
         favoriteMapper.findByUserIdAndFacilityId(userId, request.getFacilityId())
                 .ifPresent(f -> {
@@ -60,7 +60,7 @@ public class FavoriteService {
                 .toList();
     }
 
-    @Transactional
+    @Transactional(transactionManager = "favoriteTransactionManager")
     public void deleteFavorite(Long userId, FavoriteDeleteRequest request) {
         favoriteMapper.deleteByUserIdAndFacilityId(userId, request.getFacilityId());
     }

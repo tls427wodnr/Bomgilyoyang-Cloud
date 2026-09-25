@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional(readOnly = true)
+@Transactional(transactionManager = "facilityTransactionManager", readOnly = true)
 @RequiredArgsConstructor
 public class MapService {
 
@@ -37,7 +37,7 @@ public class MapService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(transactionManager = "facilityTransactionManager", readOnly = true)
     public List<FacilityResponse> getFacilities(FacilitySearchRequest request) {
         return facilityMapper.searchByRegionCursor(request);
     }

@@ -34,7 +34,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Transactional(transactionManager = "communityTransactionManager", readOnly = true)
 public class BoardService {
 
     private final BoardMapper boardMapper;
@@ -100,7 +100,7 @@ public class BoardService {
     }
 
     // 조회수 증가 + 좋아요 여부 + 첨부파일
-    @Transactional
+    @Transactional(transactionManager = "communityTransactionManager")
     public BoardResponseDTO getOneBoard(Long boardId, Long currentUserId) {
         Board board = findBoard(boardId);
         board.increaseCnt();
@@ -132,7 +132,7 @@ public class BoardService {
     }
 
     // 글 작성
-    @Transactional
+    @Transactional(transactionManager = "communityTransactionManager")
     public void createBoard(BoardRequestDTO dto, Long userId, List<MultipartFile> files) {
         Board board = Board.create(userId, dto.getTitle(), dto.getContent());
         boardMapper.insert(board);
@@ -140,7 +140,7 @@ public class BoardService {
     }
 
     // 글 수정
-    @Transactional
+    @Transactional(transactionManager = "communityTransactionManager")
     public void updateBoard(BoardRequestDTO dto, Long boardId, Long userId,
                             List<MultipartFile> files) {
         Board board = findBoard(boardId);
@@ -151,7 +151,7 @@ public class BoardService {
     }
 
     // 글 삭제
-    @Transactional
+    @Transactional(transactionManager = "communityTransactionManager")
     public void deleteBoard(Long boardId, Long userId) {
         Board board = findBoard(boardId);
         board.validateOwner(userId);
@@ -172,7 +172,7 @@ public class BoardService {
     }
 
     // 좋아요 토글 (눌렀으면 취소, 안 눌렀으면 추가)
-    @Transactional
+    @Transactional(transactionManager = "communityTransactionManager")
     public boolean toggleLike(Long boardId, Long userId) {
         Board board = findBoard(boardId);
         Optional<BoardLike> existing = boardLikeMapper.findByBoardIdAndUserId(boardId, userId);
@@ -190,7 +190,7 @@ public class BoardService {
         }
     }
     //파일 개별 삭제 (수정 화면에서)
-    @Transactional
+    @Transactional(transactionManager = "communityTransactionManager")
     public void deleteFile(Long fileId, Long userId) {
         BoardFile file = boardFileMapper.findById(fileId)
                 .orElseThrow(() -> new IllegalArgumentException("파일이 존재하지 않습니다."));

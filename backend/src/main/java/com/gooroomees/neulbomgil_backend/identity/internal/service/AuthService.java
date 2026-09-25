@@ -38,7 +38,7 @@ public class AuthService {
     @Value("${application.security.jwt.refresh-token-expiration}")
     private long refreshTokenExpiration;
 
-    @Transactional
+    @Transactional(transactionManager = "identityTransactionManager")
     public String register(RegisterRequest request) {
         if (userAuthMapper.existsByEmail(request.getEmail())) {
             throw new IllegalArgumentException("이미 사용 중인 이메일입니다.");
@@ -62,7 +62,7 @@ public class AuthService {
         return userAuthMapper.existsByEmail(email);
     }
 
-    @Transactional
+    @Transactional(transactionManager = "identityTransactionManager")
     public JwtTokenResponse login(LoginRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
@@ -90,7 +90,7 @@ public class AuthService {
                 .build();
     }
 
-    @Transactional
+    @Transactional(transactionManager = "identityTransactionManager")
     public void logout(String refreshToken) {
         if (!jwtProvider.isTokenValid(refreshToken) || !jwtProvider.isRefreshToken(refreshToken)) {
             return;
@@ -119,7 +119,7 @@ public class AuthService {
         return jwtProvider.generateAccessToken(user);
     }
 
-    @Transactional
+    @Transactional(transactionManager = "identityTransactionManager")
     public boolean changePassword(Long userId, PasswordChangeRequest request) {
         if (userId == null) {
             return false;
@@ -141,7 +141,7 @@ public class AuthService {
         return true;
     }
 
-    @Transactional
+    @Transactional(transactionManager = "identityTransactionManager")
     public void deleteUser(Long userId) {
         UserAuth user = userAuthMapper.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
@@ -150,7 +150,7 @@ public class AuthService {
         refreshTokenRedisRepository.deleteByUserId(userId);
     }
 
-    @Transactional
+    @Transactional(transactionManager = "identityTransactionManager")
     public void updateUserInfo(Long userId, UpdateUserRequest request) {
         UserAuth savedUser = userAuthMapper.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
@@ -158,7 +158,7 @@ public class AuthService {
         requireUpdated(userAuthMapper.updateName(savedUser));
     }
 
-    @Transactional
+    @Transactional(transactionManager = "identityTransactionManager")
     public boolean withdraw(Long userId, WithdrawRequest request) {
         UserAuth savedUser = userAuthMapper.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));

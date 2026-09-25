@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Transactional(transactionManager = "identityTransactionManager", readOnly = true)
 class UserDirectoryService implements UserDirectory {
 
     private final UserAuthMapper userAuthMapper;

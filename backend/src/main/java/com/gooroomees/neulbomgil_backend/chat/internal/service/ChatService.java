@@ -19,12 +19,14 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(transactionManager = "chatTransactionManager", readOnly = true)
 public class ChatService {
 
     private final ChatRoomMapper chatRoomMapper;
     private final ChatMapper chatMapper;
     private final UserDirectory userDirectory;
 
+    @Transactional(transactionManager = "chatTransactionManager")
     public ChatRoomResponseDto startChatRoom(Long userId) {
 
 
@@ -80,7 +82,7 @@ public class ChatService {
                 .toList();
     }
 
-    @Transactional
+    @Transactional(transactionManager = "chatTransactionManager")
     public ChatResponseDto saveMessage(Long roomId, Long userId, ChatRequestDto requestDto) {
 
         ChatRoom room = chatRoomMapper.findById(roomId)
@@ -108,7 +110,7 @@ public class ChatService {
                 chat.getReadAt()
         );
     }
-    @Transactional
+    @Transactional(transactionManager = "chatTransactionManager")
     public void readMessages(Long roomId,Long senderId) {
         chatMapper.updateReadAt(roomId,senderId);
     }
