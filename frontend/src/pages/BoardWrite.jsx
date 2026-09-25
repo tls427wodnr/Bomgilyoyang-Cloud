@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { BoardAPI, ReplyAPI } from "../services/board/boardService";
+import { BoardAPI, ReplyAPI } from "../services/board/BoardService";
 import { BoardSidebar } from "./BoardList";
 import { useAuth } from "../hooks/auth/useAuth";
 import ChatPopup from "../components/admin/ChatPopup.jsx";

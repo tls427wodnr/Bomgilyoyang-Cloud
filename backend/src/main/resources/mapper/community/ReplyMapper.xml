@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gooroomees.neulbomgil_backend.community.internal.reply.mapper.ReplyMapper">
+
+    <resultMap id="replyResultMap"
+               type="com.gooroomees.neulbomgil_backend.community.internal.reply.entity.Reply">
+        <id property="replyId" column="reply_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="content" column="content"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="modifiedAt" column="modified_at"/>
+        <association property="board"
+                     javaType="com.gooroomees.neulbomgil_backend.community.internal.board.entity.Board">
+            <id property="boardid" column="board_id"/>
+        </association>
+    </resultMap>
+
+    <sql id="replyColumns">
+        reply_id,
+        board_id,
+        user_id,
+        content,
+        created_at,
+        modified_at
+    </sql>
+
+    <insert id="insert"
+            parameterType="com.gooroomees.neulbomgil_backend.community.internal.reply.entity.Reply"
+            useGeneratedKeys="true"
+            keyProperty="replyId"
+            keyColumn="reply_id">
+        INSERT INTO reply (
+            board_id,
+            user_id,
+            content,
+            created_at,
+            modified_at
+        ) VALUES (
+            #{board.boardid},
+            #{userId},
+            #{content},
+            CURRENT_TIMESTAMP(6),
+            CURRENT_TIMESTAMP(6)
+        )
+    </insert>
+
+    <select id="findById" resultMap="replyResultMap">
+        SELECT
+            <include refid="replyColumns"/>
+        FROM reply
+        WHERE reply_id = #{replyId}
+    </select>
+
+    <select id="findByBoardId" resultMap="replyResultMap">
+        SELECT
+            <include refid="replyColumns"/>
+        FROM reply
+        WHERE board_id = #{boardId}
+        ORDER BY created_at DESC, reply_id DESC
+        LIMIT #{size} OFFSET #{offset}
+    </select>
+
+    <select id="countByBoardId" resultType="long">
+        SELECT COUNT(*)
+        FROM reply
+        WHERE board_id = #{boardId}
+    </select>
+
+    <select id="countByUserId" resultType="long">
+        SELECT COUNT(*)
+        FROM reply
+        WHERE user_id = #{userId}
+    </select>
+
+    <update id="update">
+        UPDATE reply
+        SET content = #{content},
+            modified_at = CURRENT_TIMESTAMP(6)
+        WHERE reply_id = #{replyId}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM reply
+        WHERE reply_id = #{replyId}
+    </delete>
+
+    <delete id="deleteByBoardId">
+        DELETE FROM reply
+        WHERE board_id = #{boardId}
+    </delete>
+
+</mapper>

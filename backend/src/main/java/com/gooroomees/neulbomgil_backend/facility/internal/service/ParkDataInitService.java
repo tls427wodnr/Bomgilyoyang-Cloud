@@ -1,0 +1,86 @@
+package com.gooroomees.neulbomgil_backend.facility.internal.service;
+
+import com.gooroomees.neulbomgil_backend.facility.internal.dto.response.ParkResponse;
+import com.gooroomees.neulbomgil_backend.facility.internal.entity.Park;
+import com.gooroomees.neulbomgil_backend.facility.internal.mapper.ParkMapper;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+@Slf4j
+@Service
+public class ParkDataInitService {
+
+    private final ParkMapper parkMapper;
+    private final ResourceLoader resourceLoader;
+    private final JdbcTemplate facilityJdbcTemplate;
+
+    public ParkDataInitService(
+            ParkMapper parkMapper,
+            ResourceLoader resourceLoader,
+            @Qualifier("facilityJdbcTemplate") JdbcTemplate facilityJdbcTemplate
+    ) {
+        this.parkMapper = parkMapper;
+        this.resourceLoader = resourceLoader;
+        this.facilityJdbcTemplate = facilityJdbcTemplate;
+    }
+
+    @Transactional(transactionManager = "facilityTransactionManager")
+    public void initParkData() {
+        log.info("공원 데이터 초기화 시작...");
+        // 1. 기존 데이터 삭제
+        parkMapper.deleteAll();
+
+        try (InputStream is = resourceLoader.getResource("classpath:data/parks.json").getInputStream()) {
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode root = mapper.readTree(is);
+            JsonNode records = root.get("records");
+
+            if (records != null && records.isArray()) {
+                List<Park> chunk = new ArrayList<>();
+                for (JsonNode node : records) {
+                    ParkResponse dto = mapper.treeToValue(node, ParkResponse.class);
+                    chunk.add(dto.toEntity());
+
+                    // 1,000건 단위로 JDBC Bulk Insert 실행
+                    if (chunk.size() >= 1000) {
+                        batchInsert(chunk);
+                        chunk.clear();
+                    }
+                }
+                // 남은 데이터 처리
+                if (!chunk.isEmpty()) {
+                    batchInsert(chunk);
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("공원 데이터 초기화 중 오류 발생", e);
+        }
+        log.info("공원 데이터 초기화 완료.");
+    }
+
+    // JdbcTemplate을 이용한 Bulk Insert
+    private void batchInsert(List<Park> parks) {
+        String sql = "INSERT INTO park (name, category, lot_address, latitude, longitude, area) " +
+                "VALUES (?, ?, ?, ?, ?, ?)";
+
+        facilityJdbcTemplate.batchUpdate(sql, parks, parks.size(), (ps, park) -> {
+            ps.setString(1, park.getName());
+            ps.setString(2, park.getCategory());
+            ps.setString(3, park.getLotAddress());
+            ps.setDouble(4, (park.getLatitude() != null) ? park.getLatitude() : 0.0);
+            ps.setDouble(5, (park.getLongitude() != null) ? park.getLongitude() : 0.0);
+            ps.setDouble(6, (park.getArea() != null) ? park.getArea() : 0.0);
+        });
+    }
+}
