@@ -26,7 +26,7 @@ public class ParkDataInitService {
     private final ResourceLoader resourceLoader;
     private final JdbcTemplate jdbcTemplate;
 
-    @Transactional
+    @Transactional(transactionManager = "facilityTransactionManager")
     public void initParkData() {
         log.info("공원 데이터 초기화 시작...");
         // 1. 기존 데이터 삭제

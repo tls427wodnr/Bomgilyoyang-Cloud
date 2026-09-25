@@ -83,7 +83,7 @@ public class FacilityDataInitService {
         log.info("모든 데이터 갱신이 완료되었습니다.");
     }
 
-    @Transactional
+    @Transactional(transactionManager = "facilityTransactionManager")
     public void savePageData(List<VWorldResponse.Feature> features) {
         List<String> ids = features.stream().map(VWorldResponse.Feature::getId).toList();
 

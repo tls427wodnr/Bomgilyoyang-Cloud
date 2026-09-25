@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Transactional(transactionManager = "facilityTransactionManager", readOnly = true)
 class FacilityLookupService implements FacilityLookup {
 
     private final FacilityMapper facilityMapper;
