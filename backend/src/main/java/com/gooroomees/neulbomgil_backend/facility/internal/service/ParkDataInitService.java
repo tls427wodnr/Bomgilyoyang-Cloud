@@ -3,8 +3,8 @@ package com.gooroomees.neulbomgil_backend.facility.internal.service;
 import com.gooroomees.neulbomgil_backend.facility.internal.dto.response.ParkResponse;
 import com.gooroomees.neulbomgil_backend.facility.internal.entity.Park;
 import com.gooroomees.neulbomgil_backend.facility.internal.mapper.ParkMapper;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -19,12 +19,21 @@ import java.util.List;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class ParkDataInitService {
 
     private final ParkMapper parkMapper;
     private final ResourceLoader resourceLoader;
-    private final JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate facilityJdbcTemplate;
+
+    public ParkDataInitService(
+            ParkMapper parkMapper,
+            ResourceLoader resourceLoader,
+            @Qualifier("facilityJdbcTemplate") JdbcTemplate facilityJdbcTemplate
+    ) {
+        this.parkMapper = parkMapper;
+        this.resourceLoader = resourceLoader;
+        this.facilityJdbcTemplate = facilityJdbcTemplate;
+    }
 
     @Transactional(transactionManager = "facilityTransactionManager")
     public void initParkData() {
@@ -65,7 +74,7 @@ public class ParkDataInitService {
         String sql = "INSERT INTO park (name, category, lot_address, latitude, longitude, area) " +
                 "VALUES (?, ?, ?, ?, ?, ?)";
 
-        jdbcTemplate.batchUpdate(sql, parks, parks.size(), (ps, park) -> {
+        facilityJdbcTemplate.batchUpdate(sql, parks, parks.size(), (ps, park) -> {
             ps.setString(1, park.getName());
             ps.setString(2, park.getCategory());
             ps.setString(3, park.getLotAddress());

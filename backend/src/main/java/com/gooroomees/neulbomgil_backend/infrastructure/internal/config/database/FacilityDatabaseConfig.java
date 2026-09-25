@@ -8,6 +8,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.autoconfigure.DataSourceProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
@@ -49,6 +50,11 @@ class FacilityDatabaseConfig {
     @Bean
     SqlSessionTemplate facilitySqlSessionTemplate() throws Exception {
         return ModuleDatabaseSupport.sqlSessionTemplate(facilitySqlSessionFactory());
+    }
+
+    @Bean
+    JdbcTemplate facilityJdbcTemplate() {
+        return new JdbcTemplate(facilityDataSource());
     }
 
     @Bean
