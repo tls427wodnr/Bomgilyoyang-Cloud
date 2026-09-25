@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { BoardAPI, ReplyAPI } from "../services/board/boardService";
+import { BoardAPI, ReplyAPI } from "../services/board/BoardService";
 import { BoardSidebar, Pagination } from "./BoardList";
 import { useAuth } from "../hooks/auth/useAuth";
 import ChatPopup from "../components/admin/ChatPopup.jsx";
